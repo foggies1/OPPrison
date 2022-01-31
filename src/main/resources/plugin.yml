@@ -1,0 +1,6 @@
+name: OPPrison
+version: '${project.version}'
+main: net.prison.foggies.core.OPPrison
+api-version: 1.17
+authors: [ foggies ]
+description: OPPrison Core
