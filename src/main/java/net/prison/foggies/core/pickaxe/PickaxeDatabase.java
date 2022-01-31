@@ -27,6 +27,11 @@ public class PickaxeDatabase extends Database {
                 "(" +
                 "UUID VARCHAR(37), " +
                 "ENCHANTMENTS TEXT, " +
+                "RAW_BLOCKS BIGINT, " +
+                "BLOCKS BIGINT, " +
+                "TOKENS_SPENT BIGINT, " +
+                "LEVEL BIGINT, " +
+                "EXPERIENCE DOUBLE, " +
                 "PRIMARY KEY (UUID)" +
                 ")");
     }
@@ -41,6 +46,11 @@ public class PickaxeDatabase extends Database {
                 return Optional.of(
                         new PlayerPickaxe(
                                 uuid,
+                                resultSet.getLong("RAW_BLOCKS"),
+                                resultSet.getLong("BLOCKS"),
+                                resultSet.getLong("TOKENS_SPENT"),
+                                resultSet.getLong("LEVEL"),
+                                resultSet.getDouble("EXPERIENCE"),
                                 (HashMap<EnchantBase, Long>) SerializeUtils.fromString(resultSet.getString("ENCHANTMENTS"))
                         )
                 );
@@ -51,13 +61,30 @@ public class PickaxeDatabase extends Database {
     }
 
     public void savePickaxe(PlayerPickaxe pickaxe) throws IOException {
-        executeQuery("UPDATE " + TABLE_NAME + " SET ENCHANTMENTS=? WHERE UUID=?",
+        executeQuery("UPDATE " + TABLE_NAME + " SET " +
+                        "RAW_BLOCKS=?," +
+                        "BLOCKS=?," +
+                        "TOKENS_SPENT=?," +
+                        "LEVEL=?," +
+                        "EXPERIENCE=?," +
+                        "ENCHANTMENTS=? WHERE UUID=?",
+                pickaxe.getRawBlocksMined(),
+                pickaxe.getBlocksMined(),
+                pickaxe.getTokensSpent(),
+                pickaxe.getLevel(),
+                pickaxe.getExperience(),
                 SerializeUtils.toString(pickaxe.getEnchantments()), pickaxe.getUuid().toString());
     }
 
     public void insertPickaxe(PlayerPickaxe pickaxe) throws IOException {
-        executeQuery("INSERT IGNORE INTO " + TABLE_NAME + " VALUES(?,?)",
-                pickaxe.getUuid().toString(), SerializeUtils.toString(pickaxe.getEnchantments()));
+        executeQuery("INSERT IGNORE INTO " + TABLE_NAME + " VALUES(?,?,?,?,?,?,?)",
+                pickaxe.getUuid().toString(),
+                pickaxe.getRawBlocksMined(),
+                pickaxe.getBlocksMined(),
+                pickaxe.getTokensSpent(),
+                pickaxe.getLevel(),
+                pickaxe.getExperience(),
+                SerializeUtils.toString(pickaxe.getEnchantments()));
     }
 
 

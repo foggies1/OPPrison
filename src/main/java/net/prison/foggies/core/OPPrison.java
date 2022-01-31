@@ -82,6 +82,7 @@ public final class OPPrison extends JavaPlugin {
     public void onDisable() {
         this.playerStorage.unloadAllOnline();
         this.mineStorage.unloadMines();
+        this.pickaxeStorage.unloadAllOnline();
     }
 
     private void setupEconomy() {

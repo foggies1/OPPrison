@@ -7,6 +7,7 @@ import me.lucko.helper.menu.scheme.MenuScheme;
 import net.prison.foggies.core.OPPrison;
 import net.prison.foggies.core.pickaxe.EnchantHandler;
 import net.prison.foggies.core.pickaxe.PickaxeHandler;
+import net.prison.foggies.core.pickaxe.PickaxeStorage;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -16,13 +17,13 @@ public class EnchantUI extends Gui {
 
     private ItemStack itemStack;
     private final EnchantHandler enchantHandler;
-    private final PickaxeHandler pickaxeHandler;
+    private final PickaxeStorage pickaxeStorage;
 
     public EnchantUI(OPPrison plugin, Player player, ItemStack itemStack) {
         super(player, 6, "&bEnchantments");
         this.itemStack = itemStack;
         this.enchantHandler = plugin.getEnchantHandler();
-        this.pickaxeHandler = plugin.getPickaxeHandler();
+        this.pickaxeStorage = plugin.getPickaxeStorage();
     }
 
     private static final MenuScheme OUTLINE = new MenuScheme()
@@ -60,10 +61,30 @@ public class EnchantUI extends Gui {
                                         .enchant(Enchantment.DIG_SPEED)
                                         .hideAttributes()
                                         .build(() -> {
-                                            pickaxeHandler.addEnchantLevel(enchant, getPlayer(), 1);
+                                            pickaxeStorage.getFuture(getPlayer().getUniqueId())
+                                                    .whenComplete((playerPickaxe, throwable) -> {
+                                                        if (throwable != null) {
+                                                            throwable.printStackTrace();
+                                                            return;
+                                                        }
+
+                                                        playerPickaxe.ifPresent(pick ->
+                                                                pick.addLevel(enchantHandler, enchant.getIdentifier(), 1));
+
+                                                    });
                                             redraw();
                                         }, () -> {
-                                            pickaxeHandler.addEnchantLevel(enchant, getPlayer(), 10);
+                                            pickaxeStorage.getFuture(getPlayer().getUniqueId())
+                                                    .whenComplete((playerPickaxe, throwable) -> {
+                                                        if (throwable != null) {
+                                                            throwable.printStackTrace();
+                                                            return;
+                                                        }
+
+                                                        playerPickaxe.ifPresent(pick ->
+                                                                pick.addLevel(enchantHandler, enchant.getIdentifier(), 10));
+
+                                                    });
                                             redraw();
                                         })
                         ));

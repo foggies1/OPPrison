@@ -2,6 +2,9 @@ package net.prison.foggies.core.pickaxe;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
+import me.lucko.helper.cooldown.Cooldown;
+import me.lucko.helper.cooldown.CooldownMap;
 import me.lucko.helper.item.ItemStackBuilder;
 import me.lucko.helper.utils.Players;
 import net.prison.foggies.core.utils.Number;
@@ -12,12 +15,34 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+/*
+
+    The pickaxe system on this core works
+    in such a way that a player can only have one pickaxe.
+
+    The pickaxe is locked to the first slot, all the pickaxe
+    data is stored either in cache therefore no NBT data is
+    ever used.
+
+    A player will join, if they don't have a pickaxe in the database,
+    it'll give them a new one and save it in cache, then all data
+    related to the pickaxe will be edited in memory.
+
+ */
 
 @Getter
+@Setter
 @AllArgsConstructor
 public class PlayerPickaxe {
 
     private UUID uuid;
+    private long rawBlocksMined;
+    private long blocksMined;
+    private long tokensSpent;
+    private long level;
+    private double experience;
     private HashMap<EnchantBase, Long> enchantments; // can you serialize a class than extends an abstract class?
 
     public PlayerPickaxe(EnchantHandler enchantHandler, UUID uuid) {
@@ -29,6 +54,11 @@ public class PlayerPickaxe {
                 .forEach(enchant -> enchantments.put(enchant, enchant.getStartLevel()));
 
         this.enchantments = enchantments;
+        this.rawBlocksMined = 0L;
+        this.blocksMined = 0L;
+        this.tokensSpent = 0L;
+        this.level = 1L;
+        this.experience = 0.0D;
     }
 
     public ItemStack toItemStack(){
@@ -45,10 +75,20 @@ public class PlayerPickaxe {
         });
 
         lore.add("&7-----------------------");
-        lore.add("");
+        lore.add("&aBlocks Mined &8(&7&oRaw&8)&a: " + Number.pretty(this.rawBlocksMined));
+        lore.add("&aBlocks Mined: " + Number.pretty(this.blocksMined));
+        lore.add("&aLevel: " + Number.pretty(this.level));
         lore.add("&7-----------------------");
 
         return itemStackBuilder.lore(lore).build();
+    }
+
+    public void addBlocksMined(long amount){
+        setBlocksMined(getBlocksMined() + amount);
+    }
+
+    public void addRawBlocksMined(long amount){
+        setRawBlocksMined(getRawBlocksMined() + amount);
     }
 
     public void addLevel(EnchantHandler enchantHandler, String identifier, long amount) {

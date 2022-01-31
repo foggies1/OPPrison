@@ -15,15 +15,7 @@ public class PickaxeGiveCMD {
                 .assertPermission(Permissions.PICKAXE_GIVE.getPermission())
                 .assertUsage("<player>")
                 .handler(c -> {
-                    final Player target = c.arg(0).parseOrFail(Player.class);
 
-                    if(target.getInventory().firstEmpty() == -1){
-                        // TODO: Inventory full message
-                        return;
-                    }
-
-                    target.getInventory().addItem(pickaxeHandler.createNewPickaxe());
-                    // TODO: Give message and receive message
                 })
                 .register("pickaxe", "pick");
 
