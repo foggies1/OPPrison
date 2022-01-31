@@ -1,5 +1,6 @@
-package net.prison.foggies.core.player;
+package net.prison.foggies.core.player.database;
 
+import net.prison.foggies.core.player.obj.PrisonPlayer;
 import net.prison.foggies.core.utils.Database;
 
 import java.io.IOException;
@@ -26,6 +27,10 @@ public class PlayerDatabase extends Database {
                 "PRESTIGE BIGINT, " +
                 "LEVEL_EXPERIENCE DOUBLE, " +
                 "AUTO_PRESTIGE BOOLEAN, " +
+                "TOKENS BIGINT, " +
+                "TOTAL_TOKENS_SPENT BIGINT," +
+                "TOTAL_TOKENS_GAINED BIGINT," +
+                "BLOCKS_MINED BIGINT, " +
                 "PRIMARY KEY (UUID)" +
                 ")");
     }
@@ -50,15 +55,27 @@ public class PlayerDatabase extends Database {
     }
 
     public void insert(PrisonPlayer prisonPlayer) throws IOException {
-        executeQuery("INSERT IGNORE INTO PlayerData VALUES(?,?,?,?,?)",
+        executeQuery("INSERT IGNORE INTO PlayerData VALUES(?,?,?,?,?,?,?,?,?)",
                 prisonPlayer.getUUID().toString(), prisonPlayer.getLevel(), prisonPlayer.getPrestige(),
-                prisonPlayer.getLevelExperience(), prisonPlayer.isAutoPrestige());
+                prisonPlayer.getLevelExperience(), prisonPlayer.isAutoPrestige(),
+                prisonPlayer.getTokens(), prisonPlayer.getTotalTokensSpent(), prisonPlayer.getTotalTokensGained(),
+                prisonPlayer.getBlocksMined());
     }
 
     public void save(PrisonPlayer prisonPlayer) {
-        executeQuery("UPDATE PlayerData SET LEVEL=?,PRESTIGE=?,LEVEL_EXPERIENCE=?,AUTO_PRESTIGE=? WHERE UUID=?",
+        executeQuery("UPDATE PlayerData SET LEVEL=?," +
+                        "PRESTIGE=?," +
+                        "LEVEL_EXPERIENCE=?," +
+                        "AUTO_PRESTIGE=?," +
+                        "TOKENS=?," +
+                        "TOTAL_TOKENS_SPENT=?," +
+                        "TOTAL_TOKENS_GAINED=?," +
+                        "BLOCKS=? WHERE UUID=?",
                 prisonPlayer.getLevel(), prisonPlayer.getPrestige(), prisonPlayer.getLevelExperience(),
-                prisonPlayer.isAutoPrestige(), prisonPlayer.getUUID().toString());
+                prisonPlayer.isAutoPrestige(), prisonPlayer.getTokens(),
+                prisonPlayer.getTotalTokensSpent(), prisonPlayer.getTotalTokensGained(),
+                prisonPlayer.getBlocksMined(),
+                prisonPlayer.getUUID().toString());
     }
 
     public boolean contains(UUID uuid) {

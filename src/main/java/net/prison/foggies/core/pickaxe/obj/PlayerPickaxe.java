@@ -1,12 +1,12 @@
-package net.prison.foggies.core.pickaxe;
+package net.prison.foggies.core.pickaxe.obj;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import me.lucko.helper.cooldown.Cooldown;
-import me.lucko.helper.cooldown.CooldownMap;
 import me.lucko.helper.item.ItemStackBuilder;
 import me.lucko.helper.utils.Players;
+import net.prison.foggies.core.pickaxe.api.EnchantBase;
+import net.prison.foggies.core.pickaxe.handler.EnchantHandler;
 import net.prison.foggies.core.utils.Number;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /*
 
@@ -38,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 public class PlayerPickaxe {
 
     private UUID uuid;
+    private String name;
     private long rawBlocksMined;
     private long blocksMined;
     private long tokensSpent;
@@ -59,11 +59,13 @@ public class PlayerPickaxe {
         this.tokensSpent = 0L;
         this.level = 1L;
         this.experience = 0.0D;
+        this.name = "&aOld Reliable";
     }
 
     public ItemStack toItemStack(){
+
         ItemStackBuilder itemStackBuilder = ItemStackBuilder.of(Material.DIAMOND_PICKAXE)
-                .name("&aUltimate Pickaxe")
+                .name(this.name)
                 .enchant(Enchantment.DIG_SPEED, 100)
                 .hideAttributes()
                 .amount(1);
@@ -74,11 +76,12 @@ public class PlayerPickaxe {
                 lore.add(enchant.getDisplayName()  + " " + Number.pretty(level));
         });
 
-        lore.add("&7-----------------------");
+        lore.add("&7&m-----------------------");
         lore.add("&aBlocks Mined &8(&7&oRaw&8)&a: " + Number.pretty(this.rawBlocksMined));
         lore.add("&aBlocks Mined: " + Number.pretty(this.blocksMined));
+        lore.add("&aTotal Tokens Spent: " + Number.pretty(this.tokensSpent));
         lore.add("&aLevel: " + Number.pretty(this.level));
-        lore.add("&7-----------------------");
+        lore.add("&7&m-----------------------");
 
         return itemStackBuilder.lore(lore).build();
     }

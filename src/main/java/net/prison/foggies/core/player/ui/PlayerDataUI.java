@@ -2,8 +2,8 @@ package net.prison.foggies.core.player.ui;
 
 import me.lucko.helper.item.ItemStackBuilder;
 import me.lucko.helper.menu.Gui;
-import net.prison.foggies.core.mines.PersonalMine;
-import net.prison.foggies.core.player.PrisonPlayer;
+import net.prison.foggies.core.mines.obj.PersonalMine;
+import net.prison.foggies.core.player.obj.PrisonPlayer;
 import net.prison.foggies.core.utils.Lang;
 import net.prison.foggies.core.utils.Number;
 import org.bukkit.Material;

@@ -3,7 +3,7 @@ package net.prison.foggies.core.player.commands.prestige;
 import me.lucko.helper.Commands;
 import net.milkbowl.vault.economy.Economy;
 import net.prison.foggies.core.OPPrison;
-import net.prison.foggies.core.player.PlayerStorage;
+import net.prison.foggies.core.player.storage.PlayerStorage;
 import org.bukkit.entity.Player;
 
 public class PrestigeCMD {

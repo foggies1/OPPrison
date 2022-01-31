@@ -1,7 +1,8 @@
-package net.prison.foggies.core.pickaxe;
+package net.prison.foggies.core.pickaxe.handler;
 
 import lombok.Getter;
 import net.prison.foggies.core.OPPrison;
+import net.prison.foggies.core.pickaxe.api.EnchantBase;
 import net.prison.foggies.core.pickaxe.enchants.KeyFinder;
 import net.prison.foggies.core.pickaxe.enchants.MoneyFinder;
 import net.prison.foggies.core.pickaxe.enchants.TokenFinder;

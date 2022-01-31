@@ -1,6 +1,7 @@
-package net.prison.foggies.core.mines;
+package net.prison.foggies.core.mines.handler;
 
 import net.prison.foggies.core.OPPrison;
+import net.prison.foggies.core.mines.obj.PersonalMine;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 

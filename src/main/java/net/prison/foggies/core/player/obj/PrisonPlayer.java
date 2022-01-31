@@ -1,4 +1,4 @@
-package net.prison.foggies.core.player;
+package net.prison.foggies.core.player.obj;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -30,6 +30,10 @@ public class PrisonPlayer {
     private long prestige;
     private double levelExperience;
     private boolean autoPrestige;
+    private long tokens;
+    private long totalTokensSpent;
+    private long totalTokensGained;
+    private long blocksMined;
 
     /**
      * Used for loading a player from database.
@@ -44,6 +48,10 @@ public class PrisonPlayer {
         this.prestige = resultSet.getLong("PRESTIGE");
         this.levelExperience = resultSet.getDouble("LEVEL_EXPERIENCE");
         this.autoPrestige = resultSet.getBoolean("AUTO_PRESTIGE");
+        this.tokens = resultSet.getLong("TOKENS");
+        this.totalTokensSpent = resultSet.getLong("TOTAL_TOKENS_SPENT");
+        this.totalTokensGained = resultSet.getLong("TOTAL_TOKENS_GAINED");
+        this.blocksMined = resultSet.getLong("BLOCKS_MINED");
     }
 
     /**
@@ -57,6 +65,10 @@ public class PrisonPlayer {
         this.prestige = 0L;
         this.levelExperience = 0.0D;
         this.autoPrestige = false;
+        this.tokens = 0L;
+        this.totalTokensSpent = 0L;
+        this.totalTokensGained = 0L;
+        this.blocksMined = 0L;
     }
 
     public double getLevelUpCost(){

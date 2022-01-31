@@ -7,7 +7,7 @@ import me.lucko.helper.text3.event.HoverEvent;
 import me.lucko.helper.utils.Players;
 import net.prison.foggies.core.utils.Lang;
 import net.prison.foggies.core.OPPrison;
-import net.prison.foggies.core.player.PlayerStorage;
+import net.prison.foggies.core.player.storage.PlayerStorage;
 import net.prison.foggies.core.utils.Number;
 import net.prison.foggies.core.utils.StringUtils;
 import org.bukkit.entity.Player;

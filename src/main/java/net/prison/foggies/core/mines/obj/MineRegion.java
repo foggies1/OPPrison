@@ -1,4 +1,4 @@
-package net.prison.foggies.core.mines;
+package net.prison.foggies.core.mines.obj;
 
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;

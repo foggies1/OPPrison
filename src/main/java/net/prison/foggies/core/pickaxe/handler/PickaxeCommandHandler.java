@@ -1,4 +1,4 @@
-package net.prison.foggies.core.pickaxe;
+package net.prison.foggies.core.pickaxe.handler;
 
 import net.prison.foggies.core.OPPrison;
 import net.prison.foggies.core.pickaxe.commands.PickaxeGiveCMD;

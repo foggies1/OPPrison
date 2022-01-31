@@ -3,8 +3,8 @@ package net.prison.foggies.core.mines.commands;
 import me.lucko.helper.Commands;
 import me.lucko.helper.utils.Players;
 import net.prison.foggies.core.OPPrison;
-import net.prison.foggies.core.mines.MineQueueHandler;
-import net.prison.foggies.core.mines.MineStorage;
+import net.prison.foggies.core.mines.handler.MineQueueHandler;
+import net.prison.foggies.core.mines.storage.MineStorage;
 import net.prison.foggies.core.utils.Lang;
 import org.bukkit.entity.Player;
 

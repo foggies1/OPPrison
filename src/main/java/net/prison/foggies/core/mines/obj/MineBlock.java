@@ -1,4 +1,4 @@
-package net.prison.foggies.core.mines;
+package net.prison.foggies.core.mines.obj;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

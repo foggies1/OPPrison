@@ -2,9 +2,9 @@ package net.prison.foggies.core.player.commands;
 
 import me.lucko.helper.Commands;
 import net.prison.foggies.core.OPPrison;
-import net.prison.foggies.core.mines.MineStorage;
-import net.prison.foggies.core.mines.PersonalMine;
-import net.prison.foggies.core.player.PlayerStorage;
+import net.prison.foggies.core.mines.storage.MineStorage;
+import net.prison.foggies.core.mines.obj.PersonalMine;
+import net.prison.foggies.core.player.storage.PlayerStorage;
 import net.prison.foggies.core.player.ui.PlayerDataUI;
 import net.prison.foggies.core.utils.Permissions;
 import org.bukkit.entity.Player;

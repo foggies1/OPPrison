@@ -1,4 +1,4 @@
-package net.prison.foggies.core.pickaxe;
+package net.prison.foggies.core.pickaxe.api;
 
 import net.prison.foggies.core.OPPrison;
 import org.bukkit.event.block.BlockBreakEvent;

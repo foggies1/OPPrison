@@ -1,5 +1,8 @@
-package net.prison.foggies.core.mines;
+package net.prison.foggies.core.mines.database;
 
+import net.prison.foggies.core.mines.obj.MineBlock;
+import net.prison.foggies.core.mines.obj.MineRegion;
+import net.prison.foggies.core.mines.obj.PersonalMine;
 import net.prison.foggies.core.utils.Database;
 import net.prison.foggies.core.utils.SerializeUtils;
 

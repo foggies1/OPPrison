@@ -1,9 +1,11 @@
-package net.prison.foggies.core.player;
+package net.prison.foggies.core.player.storage;
 
 import lombok.Getter;
 import me.lucko.helper.Schedulers;
 import me.lucko.helper.utils.Players;
 import net.prison.foggies.core.OPPrison;
+import net.prison.foggies.core.player.obj.PrisonPlayer;
+import net.prison.foggies.core.player.database.PlayerDatabase;
 import org.bukkit.Bukkit;
 
 import java.io.IOException;

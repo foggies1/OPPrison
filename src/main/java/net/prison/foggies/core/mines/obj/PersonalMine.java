@@ -1,4 +1,4 @@
-package net.prison.foggies.core.mines;
+package net.prison.foggies.core.mines.obj;
 
 import com.fastasyncworldedit.core.Fawe;
 import com.fastasyncworldedit.core.FaweAPI;

@@ -1,7 +1,10 @@
-package net.prison.foggies.core.mines;
+package net.prison.foggies.core.mines.storage;
 
 import me.lucko.helper.utils.Players;
 import net.prison.foggies.core.OPPrison;
+import net.prison.foggies.core.mines.database.MineDatabase;
+import net.prison.foggies.core.mines.obj.MineRegion;
+import net.prison.foggies.core.mines.obj.PersonalMine;
 import net.prison.foggies.core.utils.Lang;
 import net.prison.foggies.core.utils.SchematicUtil;
 import net.prison.foggies.core.utils.SimpleLocation;

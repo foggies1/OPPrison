@@ -1,7 +1,8 @@
-package net.prison.foggies.core.mines;
+package net.prison.foggies.core.mines.storage;
 
 import lombok.Getter;
 import net.prison.foggies.core.OPPrison;
+import net.prison.foggies.core.mines.obj.MineBlock;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;

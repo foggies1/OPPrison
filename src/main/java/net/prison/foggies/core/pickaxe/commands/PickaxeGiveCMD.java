@@ -2,9 +2,8 @@ package net.prison.foggies.core.pickaxe.commands;
 
 import me.lucko.helper.Commands;
 import net.prison.foggies.core.OPPrison;
-import net.prison.foggies.core.pickaxe.PickaxeHandler;
+import net.prison.foggies.core.pickaxe.handler.PickaxeHandler;
 import net.prison.foggies.core.utils.Permissions;
-import org.bukkit.entity.Player;
 
 public class PickaxeGiveCMD {
 

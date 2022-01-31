@@ -2,8 +2,8 @@ package net.prison.foggies.core.events;
 
 import me.lucko.helper.Events;
 import net.prison.foggies.core.OPPrison;
-import net.prison.foggies.core.pickaxe.PickaxeStorage;
-import net.prison.foggies.core.player.PlayerStorage;
+import net.prison.foggies.core.pickaxe.storage.PickaxeStorage;
+import net.prison.foggies.core.player.storage.PlayerStorage;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -25,14 +25,14 @@ public class PlayerJoinQuitListener {
                         e.printStackTrace();
                     }
                     playerStorage.load(player.getUniqueId());
-                });
+                }).bindWith(plugin);
 
         Events.subscribe(PlayerQuitEvent.class)
                 .handler(event -> {
                     Player player = event.getPlayer();
                     pickaxeStorage.unloadPickaxe(player.getUniqueId());
                     playerStorage.unload(player.getUniqueId());
-                });
+                }).bindWith(plugin);
     }
 
 

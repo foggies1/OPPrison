@@ -1,8 +1,8 @@
 package net.prison.foggies.core.pickaxe.enchants;
 
 import net.prison.foggies.core.OPPrison;
-import net.prison.foggies.core.pickaxe.EnchantBase;
-import net.prison.foggies.core.player.PlayerStorage;
+import net.prison.foggies.core.pickaxe.api.EnchantBase;
+import net.prison.foggies.core.player.storage.PlayerStorage;
 import net.prison.foggies.core.utils.Lang;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;

@@ -1,5 +1,7 @@
-package net.prison.foggies.core.pickaxe;
+package net.prison.foggies.core.pickaxe.database;
 
+import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
+import net.prison.foggies.core.pickaxe.api.EnchantBase;
 import net.prison.foggies.core.utils.Database;
 import net.prison.foggies.core.utils.SerializeUtils;
 
@@ -26,6 +28,7 @@ public class PickaxeDatabase extends Database {
         executeQuery("CREATE TABLE IF NOT EXISTS " + TABLE_NAME +
                 "(" +
                 "UUID VARCHAR(37), " +
+                "NAME VARCHAR(250), " +
                 "ENCHANTMENTS TEXT, " +
                 "RAW_BLOCKS BIGINT, " +
                 "BLOCKS BIGINT, " +
@@ -46,6 +49,7 @@ public class PickaxeDatabase extends Database {
                 return Optional.of(
                         new PlayerPickaxe(
                                 uuid,
+                                resultSet.getString("NAME"),
                                 resultSet.getLong("RAW_BLOCKS"),
                                 resultSet.getLong("BLOCKS"),
                                 resultSet.getLong("TOKENS_SPENT"),
@@ -62,12 +66,14 @@ public class PickaxeDatabase extends Database {
 
     public void savePickaxe(PlayerPickaxe pickaxe) throws IOException {
         executeQuery("UPDATE " + TABLE_NAME + " SET " +
+                        "NAME=?",
                         "RAW_BLOCKS=?," +
                         "BLOCKS=?," +
                         "TOKENS_SPENT=?," +
                         "LEVEL=?," +
                         "EXPERIENCE=?," +
                         "ENCHANTMENTS=? WHERE UUID=?",
+                pickaxe.getName(),
                 pickaxe.getRawBlocksMined(),
                 pickaxe.getBlocksMined(),
                 pickaxe.getTokensSpent(),
@@ -77,8 +83,9 @@ public class PickaxeDatabase extends Database {
     }
 
     public void insertPickaxe(PlayerPickaxe pickaxe) throws IOException {
-        executeQuery("INSERT IGNORE INTO " + TABLE_NAME + " VALUES(?,?,?,?,?,?,?)",
+        executeQuery("INSERT IGNORE INTO " + TABLE_NAME + " VALUES(?,?,?,?,?,?,?,?)",
                 pickaxe.getUuid().toString(),
+                pickaxe.getName(),
                 pickaxe.getRawBlocksMined(),
                 pickaxe.getBlocksMined(),
                 pickaxe.getTokensSpent(),
