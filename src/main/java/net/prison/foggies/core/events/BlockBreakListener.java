@@ -4,6 +4,7 @@ import me.lucko.helper.Events;
 import me.lucko.helper.cooldown.Cooldown;
 import me.lucko.helper.cooldown.CooldownMap;
 import me.lucko.helper.event.filter.EventFilters;
+import me.lucko.helper.plugin.ExtendedJavaPlugin;
 import me.lucko.helper.utils.Players;
 import net.minecraft.world.level.block.Blocks;
 import net.prison.foggies.core.OPPrison;
@@ -74,6 +75,6 @@ public class BlockBreakListener {
 
                             NMS.setBlockWithUpdate(brokenBlock.getWorld(), brokenBlock.getLocation(), Blocks.a, false);
                         }
-                );
+                ).bindWith(plugin);
     }
 }

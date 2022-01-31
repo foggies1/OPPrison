@@ -1,6 +1,8 @@
 package net.prison.foggies.core;
 
 import lombok.Getter;
+import me.lucko.helper.plugin.ExtendedJavaPlugin;
+import me.lucko.helper.terminable.module.TerminableModule;
 import net.milkbowl.vault.economy.Economy;
 import net.prison.foggies.core.events.BlockBreakListener;
 import net.prison.foggies.core.events.PlayerJoinQuitListener;
@@ -21,12 +23,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.logging.Logger;
 
 @Getter
-public final class OPPrison extends JavaPlugin {
+public final class OPPrison extends ExtendedJavaPlugin {
 
     private final Logger logger = Bukkit.getLogger();
     private ConfigManager configManager;
@@ -47,7 +50,7 @@ public final class OPPrison extends JavaPlugin {
 
 
     @Override
-    public void onEnable() {
+    public void enable() {
         setupEconomy();
 
         PersistentData.setPlugin(this);
@@ -79,7 +82,7 @@ public final class OPPrison extends JavaPlugin {
     }
 
     @Override
-    public void onDisable() {
+    public void disable() {
         this.playerStorage.unloadAllOnline();
         this.mineStorage.unloadMines();
         this.pickaxeStorage.unloadAllOnline();
