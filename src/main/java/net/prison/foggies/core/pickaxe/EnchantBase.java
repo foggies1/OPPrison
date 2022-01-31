@@ -3,9 +3,14 @@ package net.prison.foggies.core.pickaxe;
 import net.prison.foggies.core.OPPrison;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 
-public abstract class EnchantBase {
+public abstract class EnchantBase implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public abstract String getColor();
     public abstract String getSymbol();

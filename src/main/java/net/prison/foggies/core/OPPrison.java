@@ -9,9 +9,7 @@ import net.prison.foggies.core.mines.MineDatabase;
 import net.prison.foggies.core.mines.MineQueueHandler;
 import net.prison.foggies.core.mines.MineStorage;
 import net.prison.foggies.core.mines.commands.MineCommandHandler;
-import net.prison.foggies.core.pickaxe.EnchantHandler;
-import net.prison.foggies.core.pickaxe.PickaxeCommandHandler;
-import net.prison.foggies.core.pickaxe.PickaxeHandler;
+import net.prison.foggies.core.pickaxe.*;
 import net.prison.foggies.core.pickaxe.events.PickaxeInteractListener;
 import net.prison.foggies.core.player.PlayerDatabase;
 import net.prison.foggies.core.player.PlayerStorage;
@@ -40,6 +38,8 @@ public final class OPPrison extends JavaPlugin {
     private MineQueueHandler mineQueueHandler;
     private PickaxeHandler pickaxeHandler;
     private EnchantHandler enchantHandler;
+    private PickaxeDatabase pickaxeDatabase;
+    private PickaxeStorage pickaxeStorage;
     private World mineWorld;
     private File schematicsFolder;
 
@@ -64,8 +64,10 @@ public final class OPPrison extends JavaPlugin {
         this.playerDatabase = new PlayerDatabase("localhost", "3306", "data", "root", "");
         this.playerStorage = new PlayerStorage(this);
 
+        this.pickaxeDatabase = new PickaxeDatabase("localhost", "3306", "data", "root", "");
         this.enchantHandler = new EnchantHandler(this);
         this.pickaxeHandler = new PickaxeHandler(this);
+        this.pickaxeStorage = new PickaxeStorage(this);
 
         new PlayerJoinQuitListener(this);
         new BlockBreakListener(this);

@@ -2,20 +2,37 @@ package net.prison.foggies.core.events;
 
 import me.lucko.helper.Events;
 import net.prison.foggies.core.OPPrison;
+import net.prison.foggies.core.pickaxe.PickaxeStorage;
 import net.prison.foggies.core.player.PlayerStorage;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.io.IOException;
 
 public class PlayerJoinQuitListener {
 
     public PlayerJoinQuitListener(OPPrison plugin) {
         final PlayerStorage playerStorage = plugin.getPlayerStorage();
+        final PickaxeStorage pickaxeStorage = plugin.getPickaxeStorage();
 
         Events.subscribe(PlayerJoinEvent.class)
-                .handler(event -> playerStorage.load(event.getPlayer().getUniqueId()));
+                .handler(event ->  {
+                    Player player = event.getPlayer();
+                    try {
+                        pickaxeStorage.loadPickaxe(player.getUniqueId());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    playerStorage.load(player.getUniqueId());
+                });
 
         Events.subscribe(PlayerQuitEvent.class)
-                .handler(event -> playerStorage.unload(event.getPlayer().getUniqueId()));
+                .handler(event -> {
+                    Player player = event.getPlayer();
+                    pickaxeStorage.unloadPickaxe(player.getUniqueId());
+                    playerStorage.unload(player.getUniqueId());
+                });
     }
 
 
