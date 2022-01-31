@@ -2,6 +2,8 @@ package net.prison.foggies.core.pickaxe;
 
 import lombok.Getter;
 import net.prison.foggies.core.OPPrison;
+import net.prison.foggies.core.pickaxe.enchants.KeyFinder;
+import net.prison.foggies.core.pickaxe.enchants.MoneyFinder;
 import net.prison.foggies.core.pickaxe.enchants.TokenFinder;
 import org.bukkit.event.block.BlockBreakEvent;
 
@@ -26,6 +28,10 @@ public class EnchantHandler {
         getEnchant(name).ifPresent(enchant -> enchant.handle(plugin, e));
     }
 
+    public void handleEnchant(BlockBreakEvent e, EnchantBase enchant){
+        enchant.handle(plugin, e);
+    }
+
     public Optional<EnchantBase> getEnchant(String name){
         return Optional.ofNullable(enchantMap.get(name.toUpperCase()));
     }
@@ -40,7 +46,9 @@ public class EnchantHandler {
 
     private List<EnchantBase> getEnchants(){
         return Arrays.asList(
-                new TokenFinder()
+                new TokenFinder(),
+                new KeyFinder(),
+                new MoneyFinder()
         );
     }
 

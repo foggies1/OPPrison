@@ -12,6 +12,7 @@ import net.prison.foggies.core.mines.commands.MineCommandHandler;
 import net.prison.foggies.core.pickaxe.EnchantHandler;
 import net.prison.foggies.core.pickaxe.PickaxeCommandHandler;
 import net.prison.foggies.core.pickaxe.PickaxeHandler;
+import net.prison.foggies.core.pickaxe.events.PickaxeInteractListener;
 import net.prison.foggies.core.player.PlayerDatabase;
 import net.prison.foggies.core.player.PlayerStorage;
 import net.prison.foggies.core.player.commands.PlayerCommandHandler;
@@ -68,6 +69,7 @@ public final class OPPrison extends JavaPlugin {
 
         new PlayerJoinQuitListener(this);
         new BlockBreakListener(this);
+        new PickaxeInteractListener(this);
 
         new PlayerCommandHandler(this);
         new MineCommandHandler(this);

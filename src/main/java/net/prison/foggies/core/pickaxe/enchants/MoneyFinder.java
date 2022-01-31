@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TokenFinder extends EnchantBase {
+public class MoneyFinder extends EnchantBase {
 
     @Override
     public String getColor() {
@@ -25,17 +25,17 @@ public class TokenFinder extends EnchantBase {
 
     @Override
     public String getDisplayName() {
-        return getColor() + "&l" + getSymbol() + getColor() + "TokenFinder";
+        return getColor() + "&l" + getSymbol() + getColor() + "MoneyFinder";
     }
 
     @Override
     public String getMenuDisplayName() {
-        return getColor() + "&lTokenFinder";
+        return getColor() + "&lMoneyFinder";
     }
 
     @Override
     public String getIdentifier() {
-        return "TOKEN_FINDER";
+        return "MONEY_FINDER";
     }
 
     @Override
@@ -47,7 +47,7 @@ public class TokenFinder extends EnchantBase {
     public List<String> getDescription() {
         return new ArrayList<>(
                 Arrays.asList(
-                        "&7Find more tokens while mining."
+                        "&7Find more money while mining."
                 )
         );
     }
@@ -91,6 +91,5 @@ public class TokenFinder extends EnchantBase {
                     });
 
                 });
-
     }
 }

@@ -133,7 +133,7 @@ public class PersistentData {
     public byte getByte() {
         return persistentDataContainer.has(this.key, PersistentDataType.BYTE)
                 ? persistentDataContainer.get(this.key, PersistentDataType.BYTE)
-                : -1;
+                : 0;
     }
 
     public String getString() {
@@ -145,25 +145,25 @@ public class PersistentData {
     public float getFloat() {
         return persistentDataContainer.has(this.key, PersistentDataType.FLOAT)
                 ? persistentDataContainer.get(this.key, PersistentDataType.FLOAT)
-                : -1F;
+                : 0F;
     }
 
     public long getLong() {
         return persistentDataContainer.has(this.key, PersistentDataType.LONG)
                 ? persistentDataContainer.get(this.key, PersistentDataType.LONG)
-                : -1L;
+                : 0L;
     }
 
     public double getDouble() {
         return persistentDataContainer.has(this.key, PersistentDataType.DOUBLE)
                 ? persistentDataContainer.get(this.key, PersistentDataType.DOUBLE)
-                : -1D;
+                : 0D;
     }
 
     public int getInt() {
         return persistentDataContainer.has(this.key, PersistentDataType.INTEGER)
                 ? persistentDataContainer.get(this.key, PersistentDataType.INTEGER)
-                : -1;
+                : -0;
     }
 
     public void save() {

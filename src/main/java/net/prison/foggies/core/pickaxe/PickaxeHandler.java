@@ -68,7 +68,7 @@ public class PickaxeHandler {
                 .getKeys()
                 .forEach(key -> {
                     enchantHandler.getEnchant(key.getKey().toUpperCase()).ifPresent(enchant -> {
-                        lore.add(Component.text(StringUtils.color(enchant.getDisplayName() + " " + getEnchantLevel(key.getKey(), itemStack))));
+                        lore.add(Component.text(StringUtils.color(enchant.getDisplayName() + " " + getEnchantLevel(enchant, itemStack))));
                     });
                 });
 
@@ -82,27 +82,45 @@ public class PickaxeHandler {
         return itemStack;
     }
 
-    public void addEnchantLevel(String enchant, Player player, long amount) {
-        Optional<ItemStack> pickaxe = getPickaxe(player);
-        pickaxe.ifPresent(pick -> setEnchantLevel(enchant, player, getEnchantLevel(enchant, player) + amount));
-    }
-
-    public void setEnchantLevel(String enchant, Player player, long amount) {
+    public void addEnchantLevel(EnchantBase enchant, Player player, long amount) {
         Optional<ItemStack> pickaxe = getPickaxe(player);
         pickaxe.ifPresent(pick -> {
-            new PersistentData(enchant, pick).setLong(amount);
+                    long finalAmount = amount;
+                    long currentLevel = getEnchantLevel(enchant, player);
+
+                    if(currentLevel + finalAmount > enchant.getMaxLevel()) {
+                        finalAmount = enchant.getMaxLevel() - currentLevel;
+                    }
+
+                    setEnchantLevel(enchant, player, getEnchantLevel(enchant, player) + finalAmount);
+                    updateLore(player);
+                }
+        );
+    }
+
+    public void setEnchantLevel(EnchantBase enchant, Player player, long amount) {
+        Optional<ItemStack> pickaxe = getPickaxe(player);
+        pickaxe.ifPresent(pick -> {
+            long finalAmount = amount;
+
+            if(finalAmount > enchant.getMaxLevel()) {
+                finalAmount = enchant.getMaxLevel();
+            }
+
+            new PersistentData(enchant.getIdentifier(), pick).setLong(finalAmount);
+            updateLore(player);
         });
     }
 
-    public long getEnchantLevel(String enchant, Player player) {
+    public long getEnchantLevel(EnchantBase enchant, Player player) {
         Optional<ItemStack> pickaxe = getPickaxe(player);
         if(pickaxe.isEmpty()) return -1;
-        return new PersistentData(enchant, pickaxe.get()).getLong();
+        return new PersistentData(enchant.getIdentifier(), pickaxe.get()).getLong();
     }
 
-    public long getEnchantLevel(String enchant, ItemStack itemStack) {
+    public long getEnchantLevel(EnchantBase enchant, ItemStack itemStack) {
         if(itemStack == null || itemStack.getType() == Material.AIR || !isPickaxeItem(itemStack)) return -1;
-        return new PersistentData(enchant, itemStack).getLong();
+        return new PersistentData(enchant.getIdentifier(), itemStack).getLong();
     }
 
     private void applyEnchants(ItemStack itemStack) {
