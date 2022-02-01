@@ -3,6 +3,7 @@ package net.prison.foggies.core.pickaxe.handler;
 import lombok.Getter;
 import net.prison.foggies.core.OPPrison;
 import net.prison.foggies.core.pickaxe.api.EnchantBase;
+import net.prison.foggies.core.pickaxe.enchants.JackHammer;
 import net.prison.foggies.core.pickaxe.enchants.KeyFinder;
 import net.prison.foggies.core.pickaxe.enchants.MoneyFinder;
 import net.prison.foggies.core.pickaxe.enchants.TokenFinder;
@@ -41,7 +42,8 @@ public class EnchantHandler {
         return Arrays.asList(
                 new TokenFinder(),
                 new KeyFinder(),
-                new MoneyFinder()
+                new MoneyFinder(),
+                new JackHammer()
         );
     }
 
