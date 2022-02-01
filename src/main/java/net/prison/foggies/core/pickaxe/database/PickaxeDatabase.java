@@ -29,12 +29,12 @@ public class PickaxeDatabase extends Database {
                 "(" +
                 "UUID VARCHAR(37), " +
                 "NAME VARCHAR(250), " +
-                "ENCHANTMENTS TEXT, " +
                 "RAW_BLOCKS BIGINT, " +
                 "BLOCKS BIGINT, " +
                 "TOKENS_SPENT BIGINT, " +
                 "LEVEL BIGINT, " +
                 "EXPERIENCE DOUBLE, " +
+                "ENCHANTMENTS TEXT, " +
                 "PRIMARY KEY (UUID)" +
                 ")");
     }

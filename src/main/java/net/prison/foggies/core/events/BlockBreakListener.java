@@ -32,6 +32,19 @@ public class BlockBreakListener {
                             Optional<PrisonPlayer> prisonPlayer = playerStorage.get(player.getUniqueId());
                             Optional<PlayerPickaxe> playerPickaxe = pickaxeStorage.get(player.getUniqueId());
 
+
+                            if(currentMine.isEmpty()){
+                                System.out.println("Mine was empty");
+                            }
+
+                            if(prisonPlayer.isEmpty()){
+                                System.out.println("Prison player was empty");
+                            }
+
+                            if(playerPickaxe.isEmpty()){
+                                System.out.println("Pickaxe was empty.");
+                            }
+
                             if(currentMine.isEmpty() || prisonPlayer.isEmpty() || playerPickaxe.isEmpty()) {
                                 event.setCancelled(true);
                                 return;
@@ -49,6 +62,6 @@ public class BlockBreakListener {
                             NMS.setBlockWithUpdate(brokenBlock.getWorld(), brokenBlock.getLocation(), Blocks.a, false);
 
                         }
-                ).bindWith(plugin);
+                );
     }
 }

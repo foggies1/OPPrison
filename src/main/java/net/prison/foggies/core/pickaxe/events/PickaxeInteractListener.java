@@ -20,6 +20,6 @@ public class PickaxeInteractListener {
                 .handler(e -> {
                     Player player = e.getPlayer();
                     new EnchantUI(plugin, player, player.getInventory().getItemInMainHand()).open();
-                }).bindWith(plugin);
+                });
     }
 }

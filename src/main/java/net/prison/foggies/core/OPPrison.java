@@ -25,12 +25,13 @@ import net.prison.foggies.core.utils.WorldUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.logging.Logger;
 
 @Getter
-public final class OPPrison extends ExtendedJavaPlugin {
+public final class OPPrison extends JavaPlugin {
 
     private final Logger logger = Bukkit.getLogger();
     private ConfigManager configManager;
@@ -51,7 +52,7 @@ public final class OPPrison extends ExtendedJavaPlugin {
 
 
     @Override
-    public void enable() {
+    public void onEnable() {
         setupEconomy();
 
         PersistentData.setPlugin(this);
@@ -83,7 +84,7 @@ public final class OPPrison extends ExtendedJavaPlugin {
     }
 
     @Override
-    public void disable() {
+    public void onDisable() {
         this.playerStorage.unloadAllOnline();
         this.mineStorage.unloadMines();
         this.pickaxeStorage.unloadAllOnline();

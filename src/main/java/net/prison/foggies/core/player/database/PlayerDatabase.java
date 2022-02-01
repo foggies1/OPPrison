@@ -70,7 +70,7 @@ public class PlayerDatabase extends Database {
                         "TOKENS=?," +
                         "TOTAL_TOKENS_SPENT=?," +
                         "TOTAL_TOKENS_GAINED=?," +
-                        "BLOCKS=? WHERE UUID=?",
+                        "BLOCKS_MINED=? WHERE UUID=?",
                 prisonPlayer.getLevel(), prisonPlayer.getPrestige(), prisonPlayer.getLevelExperience(),
                 prisonPlayer.isAutoPrestige(), prisonPlayer.getTokens(),
                 prisonPlayer.getTotalTokensSpent(), prisonPlayer.getTotalTokensGained(),

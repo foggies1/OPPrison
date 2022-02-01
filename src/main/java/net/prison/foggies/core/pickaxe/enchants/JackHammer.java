@@ -1,15 +1,20 @@
 package net.prison.foggies.core.pickaxe.enchants;
 
 import com.fastasyncworldedit.core.Fawe;
+import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.regions.factory.CuboidRegionFactory;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import net.prison.foggies.core.mines.obj.PersonalMine;
 import net.prison.foggies.core.pickaxe.api.EnchantBase;
 import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
 import net.prison.foggies.core.player.obj.PrisonPlayer;
+import net.prison.foggies.core.utils.Cuboid;
 import net.prison.foggies.core.utils.Lang;
+import net.prison.foggies.core.utils.SimpleLocation;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import java.util.ArrayList;
@@ -84,10 +89,11 @@ public class JackHammer extends EnchantBase {
 
     @Override
     public void handle(PrisonPlayer prisonPlayer, PlayerPickaxe playerPickaxe, PersonalMine personalMine, BlockBreakEvent e) {
-        int width = personalMine.getMineRegion().toCuboidRegion().getWidth();
-        BlockVector3 topBlocks = personalMine.getMineRegion().toCuboidRegion().getFaces().getMaximumPoint();
-        new CuboidRegionFactory().createCenteredAt(topBlocks, width);
-        EditSession editSession = Fawe.instance().getWorldEdit().newEditSessionBuilder().fastMode(true).build();
-        editSession.setBlocks(new CuboidRegionFactory().createCenteredAt(topBlocks, width), BlockTypes.AIR);
+        CuboidRegion region = personalMine.getMineRegion().toCuboidRegion().clone();
+        region.getCenter().setComponents(region.getCenter().getX(), e.getBlock().getY(), region.getCenter().getZ());
+
+        EditSession editSession = Fawe.instance().getWorldEdit().newEditSession(FaweAPI.getWorld("mines"));
+        editSession.setBlocks(new CuboidRegionFactory().createCenteredAt(region.getCenter().toBlockPoint(), 10), BlockTypes.AIR);
+        editSession.flushQueue();
     }
 }
