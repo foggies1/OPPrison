@@ -25,33 +25,25 @@ public class SetPrestigeCMD {
                     final Player target = c.arg(0).parseOrFail(Player.class);
                     long amount = c.arg(1).parseOrFail(Long.class);
 
-                    if(amount < 0){
+                    if (amount < 0) {
                         Players.msg(c.sender(), Lang.GREATER_THAN_OR_EQUAL_TO_0.getMessage());
                         return;
                     }
 
-                    playerStorage.get(target.getUniqueId())
-                            .whenComplete(((prisonPlayer, throwable) -> {
+                    playerStorage.get(target.getUniqueId()).ifPresent(pp -> pp.setPrestige(amount));
 
-                                if (throwable != null) {
-                                    throwable.printStackTrace();
-                                    return;
-                                }
+                    Text.sendMessage(target,
+                            TextComponent.of(StringUtils.colorPrefix("&7Your &cPrestige Data &7has been updated by an &cAdmin&7, hover for details."))
+                                    .hoverEvent(HoverEvent.showText(
+                                            TextComponent.of(
+                                                    StringUtils.color("&7Below is information on how your &cPrestige Data" + "\n" +
+                                                            "&7has been altered: " + "\n" +
+                                                            "" + "\n" +
+                                                            "&c&l" + Lang.BLOCK_SYMBOL.getMessage() + "&fPrestige Set To: " + Number.pretty(amount)
+                                                    ))
+                                    ))
+                    );
 
-                                prisonPlayer.ifPresent(pp -> pp.setPrestige(amount));
-                                Text.sendMessage(target,
-                                        TextComponent.of(StringUtils.colorPrefix("&7Your &cPrestige Data &7has been updated by an &cAdmin&7, hover for details."))
-                                                .hoverEvent(HoverEvent.showText(
-                                                        TextComponent.of(
-                                                                StringUtils.color("&7Below is information on how your &cPrestige Data" + "\n" +
-                                                                        "&7has been altered: " + "\n" +
-                                                                        "" + "\n" +
-                                                                        "&c&l" + Lang.BLOCK_SYMBOL.getMessage() + "&fPrestige Set To: " + Number.pretty(amount)
-                                                        ))
-                                                ))
-                                );
-
-                            }));
 
                 })
                 .register("pset");

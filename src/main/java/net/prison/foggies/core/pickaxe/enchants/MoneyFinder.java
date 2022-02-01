@@ -82,19 +82,10 @@ public class MoneyFinder extends EnchantBase {
         final PlayerStorage playerStorage = plugin.getPlayerStorage();
         Player player = event.getPlayer();
 
-        playerStorage.get(player.getUniqueId())
-                .whenComplete((prisonPlayer, throwable) -> {
+        playerStorage.get(player.getUniqueId()).ifPresent(pp -> {
+            pp.addExperience(3L);
+            pp.addLevel(10, false);
+        });
 
-                    if(throwable != null){
-                        throwable.printStackTrace();
-                        return;
-                    }
-
-                    prisonPlayer.ifPresent(pp -> {
-                        pp.addExperience(3L);
-                        pp.addLevel(10, false);
-                    });
-
-                });
     }
 }

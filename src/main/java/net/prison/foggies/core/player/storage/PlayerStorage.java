@@ -38,7 +38,7 @@ public class PlayerStorage {
                 }, 20L, 20L * 60L * 5L);
     }
 
-    public void loadAllOnline(){
+    public void loadAllOnline() {
         log.log(Level.INFO, "Attempting to load all online players...");
         Players.forEach(player -> {
             load(player.getUniqueId());
@@ -46,7 +46,7 @@ public class PlayerStorage {
         log.log(Level.INFO, "Loading all online players has completed.");
     }
 
-    public void unloadAllOnline(){
+    public void unloadAllOnline() {
         log.log(Level.INFO, "Attempting to unload all online players...");
         Players.forEach(player -> {
             unload(player.getUniqueId());
@@ -54,10 +54,10 @@ public class PlayerStorage {
         log.log(Level.INFO, "Unloading all online players has completed.");
     }
 
-    public void load(UUID uuid){
+    public void load(UUID uuid) {
         final String name = Bukkit.getOfflinePlayer(uuid).getName();
 
-        if(!playerDatabase.contains(uuid)) {
+        if (!playerDatabase.contains(uuid)) {
             try {
                 PrisonPlayer prisonPlayer = new PrisonPlayer(uuid);
 
@@ -65,14 +65,14 @@ public class PlayerStorage {
                 prisonPlayerMap.put(uuid, prisonPlayer);
 
                 log.log(Level.INFO, "Inserted " + name + " into database, and cached.");
-            } catch (IOException e){
+            } catch (IOException e) {
                 log.log(Level.WARNING, "Something when wrong when inserting " + name + " into database.");
             }
             return;
         }
 
         Optional<PrisonPlayer> prisonPlayer = playerDatabase.get(uuid);
-        if(prisonPlayer.isEmpty()) {
+        if (prisonPlayer.isEmpty()) {
             log.log(Level.INFO, "Failed to load " + name + " from database.");
             return;
         }
@@ -81,31 +81,21 @@ public class PlayerStorage {
         log.log(Level.INFO, "Successfully loaded " + name + " from database and cached.");
     }
 
-    public void unload(UUID uuid){
+    public void unload(UUID uuid) {
         final String name = Bukkit.getOfflinePlayer(uuid).getName();
         save(uuid, true);
         log.log(Level.INFO, "Successfully unloaded " + name + ".");
     }
 
-    public void save(UUID uuid, boolean removeFromCache){
-        get(uuid).whenComplete(
-                (prisonPlayer, throwable) -> {
+    public void save(UUID uuid, boolean removeFromCache) {
+        get(uuid).ifPresent(playerDatabase::save);
+        if (removeFromCache)
+            prisonPlayerMap.remove(uuid);
 
-                    if(throwable != null){
-                        throwable.printStackTrace();
-                        return;
-                    }
-
-                    prisonPlayer.ifPresent(playerDatabase::save);
-                    if(removeFromCache)
-                        prisonPlayerMap.remove(uuid);
-
-                }
-        );
     }
 
-    public CompletableFuture<Optional<PrisonPlayer>> get(UUID uuid){
-        return CompletableFuture.supplyAsync(() -> Optional.ofNullable(prisonPlayerMap.get(uuid)));
+    public Optional<PrisonPlayer> get(UUID uuid) {
+        return Optional.ofNullable(prisonPlayerMap.get(uuid));
     }
 
 }

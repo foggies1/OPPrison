@@ -89,11 +89,11 @@ public class MineStorage {
     }
 
     public Optional<PersonalMine> get(UUID uuid){
-        return Optional.of(mineMap.get(uuid));
+        return Optional.ofNullable(mineMap.get(uuid));
     }
 
-    public CompletableFuture<Optional<PersonalMine>> get(Location location){
-        return CompletableFuture.supplyAsync(() -> mineMap.values().stream().filter(mine -> mine.getMineRegion().innerRegion().contains(location)).findFirst());
+    public Optional<PersonalMine> get(Location location){
+        return mineMap.values().stream().filter(mine -> mine.getMineRegion().innerRegion().contains(location)).findFirst();
     }
 
     public boolean isInMine(Location location){

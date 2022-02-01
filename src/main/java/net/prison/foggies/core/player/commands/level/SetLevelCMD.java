@@ -30,28 +30,19 @@ public class SetLevelCMD {
                         return;
                     }
 
-                    playerStorage.get(target.getUniqueId())
-                            .whenComplete(((prisonPlayer, throwable) -> {
+                    playerStorage.get(target.getUniqueId()).ifPresent(pp -> pp.setLevel(amount));
 
-                                if (throwable != null) {
-                                    throwable.printStackTrace();
-                                    return;
-                                }
-
-                                prisonPlayer.ifPresent(pp -> pp.setLevel(amount));
-                                Text.sendMessage(target,
-                                        TextComponent.of(StringUtils.colorPrefix("&7Your &cLevel Data &7has been updated by an &cAdmin&7, hover for details."))
-                                                .hoverEvent(HoverEvent.showText(
-                                                        TextComponent.of(
-                                                                StringUtils.color("&7Below is information on how your &cLevel Data" + "\n" +
-                                                                        "&7has been altered: " + "\n" +
-                                                                        "" + "\n" +
-                                                                        "&c&l" + Lang.BLOCK_SYMBOL.getMessage() + "&fLevel Set To: " + Number.pretty(amount)
-                                                                ))
-                                                ))
-                                );
-
-                            }));
+                    Text.sendMessage(target,
+                            TextComponent.of(StringUtils.colorPrefix("&7Your &cLevel Data &7has been updated by an &cAdmin&7, hover for details."))
+                                    .hoverEvent(HoverEvent.showText(
+                                            TextComponent.of(
+                                                    StringUtils.color("&7Below is information on how your &cLevel Data" + "\n" +
+                                                            "&7has been altered: " + "\n" +
+                                                            "" + "\n" +
+                                                            "&c&l" + Lang.BLOCK_SYMBOL.getMessage() + "&fLevel Set To: " + Number.pretty(amount)
+                                                    ))
+                                    ))
+                    );
 
                 })
                 .register("levelset", "lset");

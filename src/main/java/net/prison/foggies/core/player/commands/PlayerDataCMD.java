@@ -28,17 +28,7 @@ public class PlayerDataCMD {
                     if(personalMine.isEmpty()) return;
 
 
-                    playerStorage.get(target.getUniqueId())
-                            .whenComplete(((optionalPrisonPlayer, throwable) -> {
-                                if(throwable != null){
-                                    throwable.printStackTrace();
-                                    return;
-                                }
-
-                                optionalPrisonPlayer.ifPresent(p -> new PlayerDataUI(personalMine.get(), p, c.sender()).open());
-
-                            }));
-
+                    playerStorage.get(target.getUniqueId()).ifPresent(p -> new PlayerDataUI(personalMine.get(), p, c.sender()).open());
 
                 })
                 .register("playerdata", "pd");

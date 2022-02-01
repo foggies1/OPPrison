@@ -31,15 +31,7 @@ public class MineBlockUI extends Gui {
         this.mineBlockMap = plugin.getMineBlockStorage().getMineBlocks();
         this.mineQueueHandler = plugin.getMineQueueHandler();
 
-        plugin.getPlayerStorage().get(player.getUniqueId())
-                .whenComplete((prisonPlayer1, throwable) -> {
-                    if (throwable != null) {
-                        throwable.printStackTrace();
-                        return;
-                    }
-                    prisonPlayer1.ifPresent(value -> this.prisonPlayer = value);
-                });
-
+        plugin.getPlayerStorage().get(player.getUniqueId()).ifPresent(value -> this.prisonPlayer = value);
         plugin.getMineStorage().get(player.getUniqueId()).ifPresent(mine -> this.personalMine = mine);
     }
 

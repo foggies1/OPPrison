@@ -1,15 +1,21 @@
 package net.prison.foggies.core.events;
 
+import com.mojang.datafixers.util.Either;
 import me.lucko.helper.Events;
 import net.minecraft.world.level.block.Blocks;
 import net.prison.foggies.core.OPPrison;
+import net.prison.foggies.core.mines.obj.PersonalMine;
 import net.prison.foggies.core.mines.storage.MineStorage;
+import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
 import net.prison.foggies.core.pickaxe.storage.PickaxeStorage;
+import net.prison.foggies.core.player.obj.PrisonPlayer;
 import net.prison.foggies.core.player.storage.PlayerStorage;
 import net.prison.foggies.core.utils.NMS;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
+
+import java.util.Optional;
 
 public class BlockBreakListener {
 
@@ -22,53 +28,26 @@ public class BlockBreakListener {
                 .handler(event -> {
                             Player player = event.getPlayer();
                             Block brokenBlock = event.getBlock();
+                            Optional<PersonalMine> currentMine = mineStorage.get(event.getBlock().getLocation());
+                            Optional<PrisonPlayer> prisonPlayer = playerStorage.get(player.getUniqueId());
+                            Optional<PlayerPickaxe> playerPickaxe = pickaxeStorage.get(player.getUniqueId());
 
-                            mineStorage.get(event.getBlock().getLocation()).whenComplete(((personalMine, throwable) -> {
+                            if(currentMine.isEmpty() || prisonPlayer.isEmpty() || playerPickaxe.isEmpty()) {
+                                event.setCancelled(true);
+                                return;
+                            }
 
-                                if (throwable != null) {
-                                    throwable.printStackTrace();
-                                    return;
-                                }
+                            currentMine.get().addBlocksMined(1L);
+                            prisonPlayer.get().addBlocksMined(1L);
+                            playerPickaxe.ifPresent(pickaxe -> {
+                                pickaxe.addRawBlocksMined(1L);
+                                pickaxe.getEnchantments()
+                                        .keySet()
+                                        .forEach(enchant -> enchant.handle(plugin, event));
+                            });
 
-                                personalMine.ifPresent(mine -> {
-                                    mine.addBlocksMined(1L);
-
-                                    /*
-                                        Player Handling ->
-                                        Gets the player and then adds blocks mined to the player.
-                                     */
-
-                                    playerStorage.get(player.getUniqueId()).join().ifPresent(pp -> pp.addBlocksMined(1));
-
-                                    /*
-                                        Pickaxe Handling ->
-                                        Gets the pickaxe of the player and adds
-                                        blocks mined and then runs through all the enchant
-                                        functionality.
-                                     */
-
-                                    pickaxeStorage.getFuture(player.getUniqueId())
-                                            .whenComplete(((playerPickaxe, throwable1) -> {
-
-                                                if (throwable1 != null) {
-                                                    throwable1.printStackTrace();
-                                                    return;
-                                                }
-
-                                                playerPickaxe.ifPresent(pick -> {
-                                                    pick.addRawBlocksMined(1L);
-                                                    pick.getEnchantments()
-                                                            .keySet()
-                                                            .forEach(enchant -> enchant.handle(plugin, event));
-                                                });
-
-                                            }));
-
-
-                                });
-
-                            }));
                             NMS.setBlockWithUpdate(brokenBlock.getWorld(), brokenBlock.getLocation(), Blocks.a, false);
+
                         }
                 ).bindWith(plugin);
     }

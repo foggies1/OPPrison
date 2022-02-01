@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 public class TokenTakeCMD {
 
-    public TokenTakeCMD(OPPrison plugin){
+    public TokenTakeCMD(OPPrison plugin) {
         final PlayerStorage playerStorage = plugin.getPlayerStorage();
 
         Commands.create()
@@ -20,21 +20,13 @@ public class TokenTakeCMD {
                     Player target = c.arg(0).parseOrFail(Player.class);
                     long amount = c.arg(1).parseOrFail(Long.class);
 
-                    if(amount < 0){
+                    if (amount < 0) {
                         Players.msg(c.sender(), Lang.GREATER_THAN_OR_EQUAL_TO_0.getMessage());
                         return;
                     }
 
-                    playerStorage.get(target.getUniqueId())
-                            .whenCompleteAsync((prisonPlayer, throwable) -> {
-                                if(throwable != null){
-                                    throwable.printStackTrace();
-                                    return;
-                                }
+                    playerStorage.get(target.getUniqueId()).ifPresent(pp -> pp.takeTokens(amount, true));
 
-                                prisonPlayer.ifPresent(pp -> pp.takeTokens(amount, true));
-
-                            });
 
                     // TODO: Implement message to target and sender.
                 })

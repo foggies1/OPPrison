@@ -17,17 +17,7 @@ public class MineEmptyCMD {
                 .assertPermission(Permissions.MINE_EMPTY.getPermission())
                 .handler(c -> {
                     final Player player = c.sender();
-                    mineStorage.get(player.getLocation())
-                            .whenComplete((mine, throwable) -> {
-
-                                if (throwable != null) {
-                                    throwable.printStackTrace();
-                                    return;
-                                }
-
-                                mine.ifPresent(PersonalMine::empty);
-
-                            });
+                    mineStorage.get(player.getLocation()).ifPresent(PersonalMine::empty);
                 })
                 .register("mineempty");
 

@@ -16,17 +16,8 @@ public class PrestigeMaxCMD {
                 .assertPlayer()
                 .handler(c -> {
                     final Player player = c.sender();
-                    playerStorage.get(player.getUniqueId())
-                            .whenComplete(((pPlayer, throwable) -> {
+                    playerStorage.get(player.getUniqueId()).ifPresent(p -> p.prestigeMax(economy));
 
-                                if(throwable != null){
-                                    throwable.printStackTrace();
-                                    return;
-                                }
-
-                                pPlayer.ifPresent(p -> p.prestigeMax(economy));
-
-                            }));
                 })
                 .register("prestigemax");
 

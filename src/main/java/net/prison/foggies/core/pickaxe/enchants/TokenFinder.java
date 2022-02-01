@@ -83,19 +83,11 @@ public class TokenFinder extends EnchantBase {
         Player player = event.getPlayer();
 
         playerStorage.get(player.getUniqueId())
-                .whenComplete((prisonPlayer, throwable) -> {
-
-                    if(throwable != null){
-                        throwable.printStackTrace();
-                        return;
-                    }
-
-                    prisonPlayer.ifPresent(pp -> {
-                        pp.addExperience(3L);
-                        pp.addLevel(10, false);
-                    });
-
+                .ifPresent(pp -> {
+                    pp.addExperience(3L);
+                    pp.addLevel(10, false);
                 });
+
 
     }
 }

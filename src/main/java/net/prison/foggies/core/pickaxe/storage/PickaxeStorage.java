@@ -72,17 +72,7 @@ public class PickaxeStorage {
     }
 
     public void updatePickaxe(Player player) {
-        getFuture(player.getUniqueId()).whenComplete((pickaxe, throwable) -> {
-            if (throwable != null) {
-                throwable.printStackTrace();
-                return;
-            }
-            pickaxe.ifPresent(pick -> player.getInventory().setItem(0, pick.toItemStack()));
-        });
-    }
-
-    public CompletableFuture<Optional<PlayerPickaxe>> getFuture(UUID uuid) {
-        return CompletableFuture.supplyAsync(() -> Optional.ofNullable(pickaxeMap.get(uuid)));
+        get(player.getUniqueId()).ifPresent(pick -> player.getInventory().setItem(0, pick.toItemStack()));
     }
 
     public Optional<PlayerPickaxe> get(UUID uuid) {
