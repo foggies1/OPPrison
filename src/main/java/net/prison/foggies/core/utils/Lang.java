@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum Lang {
 
     PREFIX("&4&lVERITY ▎ "),
+    NOT_ENOUGH_TOKENS("&cYou do not have enough tokens."),
     NOT_ENOUGH_MONEY("&cYou do not have enough money."),
     MINE_ADDED_TO_QUEUE("&7Your Mine has been added to the queue to reset!"),
     MINE_BLOCK_CHANGED("&7You've changed your Mine Block to &c%block%&7!"),

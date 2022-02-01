@@ -23,6 +23,7 @@ public abstract class EnchantBase implements Serializable {
     public abstract long getAdminMaxLevel();
     public abstract float getChance();
     public abstract double getBasePrice();
+    public abstract double getCost(long amount);
     public abstract void handle(OPPrison plugin, BlockBreakEvent e);
 
 }

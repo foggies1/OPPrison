@@ -62,6 +62,7 @@ public class EnchantUI extends Gui {
                                         .build(() -> {
                                             pickaxeStorage.getFuture(getPlayer().getUniqueId())
                                                     .whenComplete((playerPickaxe, throwable) -> {
+
                                                         if (throwable != null) {
                                                             throwable.printStackTrace();
                                                             return;
@@ -69,19 +70,6 @@ public class EnchantUI extends Gui {
 
                                                         playerPickaxe.ifPresent(pick ->
                                                                 pick.addLevel(enchantHandler, enchant.getIdentifier(), 1));
-
-                                                    });
-                                            redraw();
-                                        }, () -> {
-                                            pickaxeStorage.getFuture(getPlayer().getUniqueId())
-                                                    .whenComplete((playerPickaxe, throwable) -> {
-                                                        if (throwable != null) {
-                                                            throwable.printStackTrace();
-                                                            return;
-                                                        }
-
-                                                        playerPickaxe.ifPresent(pick ->
-                                                                pick.addLevel(enchantHandler, enchant.getIdentifier(), 10));
 
                                                     });
                                             redraw();

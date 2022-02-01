@@ -107,6 +107,18 @@ public class PrisonPlayer {
         sendPrestigeMessage(1, cost);
     }
 
+    public void addTokens(long amount){
+        setTokens(getTokens() + amount);
+    }
+
+    public void addTotalTokensSpent(long amount){
+        setTotalTokensSpent(getTotalTokensSpent() + amount);
+    }
+
+    public void addTotalTokensGained(long amount){
+        setTotalTokensGained(getTotalTokensGained() + amount);
+    }
+
     public void addLevel(long amount, boolean viaExperience){
         setLevel(getLevel() + amount);
         if(viaExperience)
@@ -147,6 +159,21 @@ public class PrisonPlayer {
     public void takeLevel(long amount){
         if(getLevel() - amount < 0) amount = getLevel();
         setLevel(getLevel() - amount);
+    }
+
+    public void takeTokens(long amount){
+        if(getTokens() - amount < 0) amount = getTokens();
+        setTokens(getTokens() - amount);
+    }
+
+    public void takeTotalTokensSpent(long amount){
+        if(getTotalTokensSpent() - amount < 0) amount = getTotalTokensSpent();
+        setTotalTokensSpent(getTotalTokensSpent() - amount);
+    }
+
+    public void takeTotalTokensGained(long amount){
+        if(getTotalTokensGained() - amount < 0) amount = getTotalTokensGained();
+        setTotalTokensGained(getTotalTokensGained() - amount);
     }
 
     public Player toBukkit() {

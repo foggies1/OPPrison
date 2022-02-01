@@ -73,6 +73,11 @@ public class MoneyFinder extends EnchantBase {
     }
 
     @Override
+    public double getCost(long amount) {
+        return getBasePrice() * amount;
+    }
+
+    @Override
     public void handle(OPPrison plugin, BlockBreakEvent event) {
         final PlayerStorage playerStorage = plugin.getPlayerStorage();
         Player player = event.getPlayer();
