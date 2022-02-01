@@ -1,6 +1,9 @@
 package net.prison.foggies.core.pickaxe.api;
 
 import net.prison.foggies.core.OPPrison;
+import net.prison.foggies.core.mines.obj.PersonalMine;
+import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
+import net.prison.foggies.core.player.obj.PrisonPlayer;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import java.io.Serial;
@@ -24,6 +27,6 @@ public abstract class EnchantBase implements Serializable {
     public abstract float getChance();
     public abstract double getBasePrice();
     public abstract double getCost(long amount);
-    public abstract void handle(OPPrison plugin, BlockBreakEvent e);
+    public abstract void handle(PrisonPlayer prisonPlayer, PlayerPickaxe playerPickaxe, PersonalMine personalMine, BlockBreakEvent e);
 
 }

@@ -25,14 +25,6 @@ public class EnchantHandler {
         this.enchantMap = loadEnchants();
     }
 
-    public void handleEnchant(BlockBreakEvent e, String name){
-        getEnchant(name).ifPresent(enchant -> enchant.handle(plugin, e));
-    }
-
-    public void handleEnchant(BlockBreakEvent e, EnchantBase enchant){
-        enchant.handle(plugin, e);
-    }
-
     public Optional<EnchantBase> getEnchant(String name){
         return Optional.ofNullable(enchantMap.get(name.toUpperCase()));
     }

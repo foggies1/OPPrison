@@ -43,7 +43,7 @@ public class BlockBreakListener {
                                 pickaxe.addRawBlocksMined(1L);
                                 pickaxe.getEnchantments()
                                         .keySet()
-                                        .forEach(enchant -> enchant.handle(plugin, event));
+                                        .forEach(enchant -> enchant.handle(prisonPlayer.get(), playerPickaxe.get(), currentMine.get(), event));
                             });
 
                             NMS.setBlockWithUpdate(brokenBlock.getWorld(), brokenBlock.getLocation(), Blocks.a, false);
