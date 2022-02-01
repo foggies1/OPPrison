@@ -53,7 +53,7 @@ public class EnchantUpgradeUI extends Gui {
                 .hideAttributes();
 
         double baseCost = enchant.getBasePrice();
-        Optional<PrisonPlayer> prisonPlayer = playerStorage.get(uuid).join();
+        Optional<PrisonPlayer> prisonPlayer = playerStorage.get(uuid);
         long tokens = prisonPlayer.map(PrisonPlayer::getTokens).orElse(0L);
 
         setItem(12,
