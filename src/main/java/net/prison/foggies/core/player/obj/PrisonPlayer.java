@@ -71,24 +71,24 @@ public class PrisonPlayer {
         this.blocksMined = 0L;
     }
 
-    public double getLevelUpCost(){
+    public double getLevelUpCost() {
         return Math.pow(getLevel(), 3) * LEVEL_BASE_COST;
     }
 
-    public double getPrestigeCost(long amount){
+    public double getPrestigeCost(long amount) {
         return amount * PRESTIGE_BASE_COST;
     }
 
-    public long getMaxPrestigeAmount(double balance){
+    public long getMaxPrestigeAmount(double balance) {
         return (long) (balance / PRESTIGE_BASE_COST);
     }
 
-    public void prestigeMax(Economy economy){
+    public void prestigeMax(Economy economy) {
         long prestiges = getLevel() / MAX_LEVEL;
         double cost = getPrestigeCost(prestiges);
 
-        if(prestiges <= 0) return;
-        if(economy.getBalance(toBukkit()) < cost) return;
+        if (prestiges <= 0) return;
+        if (economy.getBalance(toBukkit()) < cost) return;
 
         economy.withdrawPlayer(toBukkit(), cost);
         addPrestige(prestiges);
@@ -97,44 +97,50 @@ public class PrisonPlayer {
 
     }
 
-    public void prestige(Economy economy){
-        if(getLevel() < MAX_LEVEL) return;
+    public void prestige(Economy economy) {
+        if (getLevel() < MAX_LEVEL) return;
         double cost = getPrestigeCost(1);
-        if(economy.getBalance(toBukkit()) < cost) return;
+        if (economy.getBalance(toBukkit()) < cost) return;
 
         economy.withdrawPlayer(toBukkit(), cost);
         addPrestige(1);
         sendPrestigeMessage(1, cost);
     }
 
-    public void addTokens(long amount){
-        setTokens(getTokens() + amount);
+    public void addBlocksMined(long amount){
+        setBlocksMined(getBlocksMined() + amount);
     }
 
-    public void addTotalTokensSpent(long amount){
+    public void addTokens(long amount, boolean admin) {
+        setTokens(getTokens() + amount);
+        if (!admin)
+            addTotalTokensGained(amount);
+    }
+
+    public void addTotalTokensSpent(long amount) {
         setTotalTokensSpent(getTotalTokensSpent() + amount);
     }
 
-    public void addTotalTokensGained(long amount){
+    public void addTotalTokensGained(long amount) {
         setTotalTokensGained(getTotalTokensGained() + amount);
     }
 
-    public void addLevel(long amount, boolean viaExperience){
+    public void addLevel(long amount, boolean viaExperience) {
         setLevel(getLevel() + amount);
-        if(viaExperience)
+        if (viaExperience)
             sendLevelUpMessage(amount);
     }
 
-    public void addExperience(double amount){
+    public void addExperience(double amount) {
 
         double levelUpCost = getLevelUpCost();
         long levels = 0;
         double experience = getLevelExperience() + amount;
 
-        if(experience > levelUpCost){
-            while (experience > levelUpCost){
+        if (experience > levelUpCost) {
+            while (experience > levelUpCost) {
                 levels++;
-                experience-=levelExperience;
+                experience -= levelExperience;
             }
         }
 
@@ -142,37 +148,44 @@ public class PrisonPlayer {
         setLevelExperience(experience);
     }
 
-    public void addPrestige(long amount){
+    public void addPrestige(long amount) {
         setPrestige(getPrestige() + amount);
     }
 
-    public void takePrestige(long amount){
-        if(getPrestige() - amount < 0) amount = getPrestige();
+    public void takeBlocksMined(long amount){
+        if(getBlocksMined() - amount < 0) amount = getBlocksMined();
+        setBlocksMined(getBlocksMined() - amount);
+    }
+
+    public void takePrestige(long amount) {
+        if (getPrestige() - amount < 0) amount = getPrestige();
         setPrestige(getPrestige() - amount);
     }
 
-    public void takeExperience(double amount){
-        if(getLevelExperience() - amount < 0) amount = getLevelExperience();
+    public void takeExperience(double amount) {
+        if (getLevelExperience() - amount < 0) amount = getLevelExperience();
         setLevelExperience(getLevelExperience() - amount);
     }
 
-    public void takeLevel(long amount){
-        if(getLevel() - amount < 0) amount = getLevel();
+    public void takeLevel(long amount) {
+        if (getLevel() - amount < 0) amount = getLevel();
         setLevel(getLevel() - amount);
     }
 
-    public void takeTokens(long amount){
-        if(getTokens() - amount < 0) amount = getTokens();
+    public void takeTokens(long amount, boolean admin) {
+        if (getTokens() - amount < 0) amount = getTokens();
         setTokens(getTokens() - amount);
+        if (!admin)
+            addTotalTokensSpent(amount);
     }
 
-    public void takeTotalTokensSpent(long amount){
-        if(getTotalTokensSpent() - amount < 0) amount = getTotalTokensSpent();
+    public void takeTotalTokensSpent(long amount) {
+        if (getTotalTokensSpent() - amount < 0) amount = getTotalTokensSpent();
         setTotalTokensSpent(getTotalTokensSpent() - amount);
     }
 
-    public void takeTotalTokensGained(long amount){
-        if(getTotalTokensGained() - amount < 0) amount = getTotalTokensGained();
+    public void takeTotalTokensGained(long amount) {
+        if (getTotalTokensGained() - amount < 0) amount = getTotalTokensGained();
         setTotalTokensGained(getTotalTokensGained() - amount);
     }
 
@@ -196,7 +209,7 @@ public class PrisonPlayer {
     }
 
     private void sendLevelUpMessage(final long levelAmount) {
-        if(levelAmount <= 0) return;
+        if (levelAmount <= 0) return;
         Text.sendMessage(toBukkit(),
                 TextComponent.of(StringUtils.colorPrefix(Lang.LEVEL_UP.getMessage()))
                         .hoverEvent(HoverEvent.showText(

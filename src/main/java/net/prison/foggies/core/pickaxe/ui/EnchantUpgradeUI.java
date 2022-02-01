@@ -78,8 +78,7 @@ public class EnchantUpgradeUI extends Gui {
                             });
 
                             prisonPlayer.ifPresent(pp -> {
-                                pp.addTotalTokensSpent(cost);
-                                pp.takeTokens(cost);
+                                pp.takeTokens(cost, false);
                             });
 
                             redraw();
@@ -109,8 +108,7 @@ public class EnchantUpgradeUI extends Gui {
                             });
 
                             prisonPlayer.ifPresent(pp -> {
-                                pp.addTotalTokensSpent(cost);
-                                pp.takeTokens(cost);
+                                pp.takeTokens(cost, false);
                             });
 
                             redraw();
@@ -134,8 +132,7 @@ public class EnchantUpgradeUI extends Gui {
                             });
 
                             prisonPlayer.ifPresent(pp -> {
-                                pp.addTotalTokensSpent(tokens);
-                                pp.takeTokens(tokens);
+                                pp.takeTokens(tokens, false);
                             });
 
                             redraw();

@@ -12,14 +12,18 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.List;
+
 public class EnchantUI extends Gui {
 
     private ItemStack itemStack;
     private final EnchantHandler enchantHandler;
     private final PickaxeStorage pickaxeStorage;
+    private final OPPrison plugin;
 
     public EnchantUI(OPPrison plugin, Player player, ItemStack itemStack) {
         super(player, 6, "&bEnchantments");
+        this.plugin = plugin;
         this.itemStack = itemStack;
         this.enchantHandler = plugin.getEnchantHandler();
         this.pickaxeStorage = plugin.getPickaxeStorage();
@@ -52,29 +56,28 @@ public class EnchantUI extends Gui {
 
         enchantHandler.getEnchantMap()
                 .values()
-                .forEach(enchant ->
-                        enchantPopulator.accept(
-                                ItemStackBuilder.of(Material.ENCHANTED_BOOK)
-                                        .name(enchant.getDisplayName())
-                                        .lore(enchant.getDescription())
-                                        .enchant(Enchantment.DIG_SPEED)
-                                        .hideAttributes()
-                                        .build(() -> {
-                                            pickaxeStorage.getFuture(getPlayer().getUniqueId())
-                                                    .whenComplete((playerPickaxe, throwable) -> {
+                .forEach(enchant -> {
 
-                                                        if (throwable != null) {
-                                                            throwable.printStackTrace();
-                                                            return;
-                                                        }
+                            List<String> lore = enchant.getDescription();
+                            lore.add("");
+                            lore.add("&7&oClick here to begin Upgrading!");
 
-                                                        playerPickaxe.ifPresent(pick ->
-                                                                pick.addLevel(enchantHandler, enchant.getIdentifier(), 1));
+                            enchantPopulator.accept(
+                                    ItemStackBuilder.of(Material.ENCHANTED_BOOK)
+                                            .name(enchant.getDisplayName())
+                                            .lore(lore)
+                                            .enchant(Enchantment.DIG_SPEED)
+                                            .hideAttributes()
+                                            .build(() -> {
+                                                new EnchantUpgradeUI(getPlayer(), plugin, enchant).open();
+                                                redraw();
+                                            })
 
-                                                    });
-                                            redraw();
-                                        })
-                        ));
+                            );
+
+                        }
+                );
 
     }
 }
+

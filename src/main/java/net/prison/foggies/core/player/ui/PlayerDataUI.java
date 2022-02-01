@@ -28,14 +28,20 @@ public class PlayerDataUI extends Gui {
             return;
         }
 
+        final String prefix = "&4&l" + Lang.BLOCK_SYMBOL.getMessage();
+
         setItem(20,
                 ItemStackBuilder.of(Material.PLAYER_HEAD)
                         .name("&4&lPlayer Data")
                         .lore(
                                 "&7Below is &c" + getPlayer().getName() + "'s &7Player data.",
                                 "",
-                                "&4&l" + Lang.BLOCK_SYMBOL.getMessage() + "&cLevel: &f" + Number.pretty(prisonPlayer.getLevel()),
-                                "&4&l" + Lang.BLOCK_SYMBOL.getMessage() + "&cPrestige: &f" + Number.pretty(prisonPlayer.getPrestige())
+                                prefix + "&cLevel: &f" + Number.pretty(prisonPlayer.getLevel()),
+                                prefix + "&cPrestige: &f" + Number.pretty(prisonPlayer.getPrestige()),
+                                prefix + "&cTokens: &f" + Number.pretty(prisonPlayer.getTokens()),
+                                prefix + "&cTotal Tokens Gained: &f" + Number.pretty(prisonPlayer.getTotalTokensGained()),
+                                prefix + "&cTotal Tokens Spent: &f" + Number.pretty(prisonPlayer.getTotalTokensSpent()),
+                                prefix + "&cBlocks Mined: &f" + Number.pretty(prisonPlayer.getBlocksMined())
                         )
                         .enchant(Enchantment.DIG_SPEED)
                         .hideAttributes()
@@ -48,9 +54,9 @@ public class PlayerDataUI extends Gui {
                 .lore(
                         "&7Below is &c" + getPlayer().getName() + "'s &7Personal Mine data.",
                         "",
-                        "&4&l" + Lang.BLOCK_SYMBOL.getMessage() + "&cLevel: &f" + Number.pretty(personalMine.getMineLevel()),
-                        "&4&l" + Lang.BLOCK_SYMBOL.getMessage() + "&cBlocks Mined: &f" + Number.pretty(personalMine.getBlocksMined()),
-                        "&4&l" + Lang.BLOCK_SYMBOL.getMessage() + "&cBlock Value: &f$" + Number.pretty(personalMine.getMineBlock().getSellPrice())
+                        prefix + "&cLevel: &f" + Number.pretty(personalMine.getMineLevel()),
+                        prefix + "&cBlocks Mined: &f" + Number.pretty(personalMine.getBlocksMined()),
+                        prefix + "&cBlock Value: &f$" + Number.pretty(personalMine.getMineBlock().getSellPrice())
                 )
                 .enchant(Enchantment.DIG_SPEED)
                 .hideAttributes()
