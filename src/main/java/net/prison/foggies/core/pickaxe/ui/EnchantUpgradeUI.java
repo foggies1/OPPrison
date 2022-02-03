@@ -2,11 +2,13 @@ package net.prison.foggies.core.pickaxe.ui;
 
 import me.lucko.helper.item.ItemStackBuilder;
 import me.lucko.helper.menu.Gui;
+import me.lucko.helper.menu.scheme.MenuPopulator;
 import me.lucko.helper.menu.scheme.MenuScheme;
 import me.lucko.helper.utils.Players;
 import net.prison.foggies.core.OPPrison;
 import net.prison.foggies.core.pickaxe.api.EnchantBase;
 import net.prison.foggies.core.pickaxe.handler.EnchantHandler;
+import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
 import net.prison.foggies.core.pickaxe.storage.PickaxeStorage;
 import net.prison.foggies.core.player.obj.PrisonPlayer;
 import net.prison.foggies.core.player.storage.PlayerStorage;
@@ -15,11 +17,8 @@ import net.prison.foggies.core.utils.Number;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
+import java.util.*;
 
 public class EnchantUpgradeUI extends Gui {
 
@@ -40,104 +39,86 @@ public class EnchantUpgradeUI extends Gui {
 
     private static final MenuScheme OUTLINE = new MenuScheme()
             .mask("111111111")
-            .mask("111000111")
+            .mask("000000000")
             .mask("111111111");
+
+    private static final MenuScheme UPGRADES = new MenuScheme()
+            .mask("000000000")
+            .mask("111111111")
+            .mask("000000000");
 
     @Override
     public void redraw() {
 
         UUID uuid = getPlayer().getUniqueId();
-
-        ItemStackBuilder itemStackBuilder = ItemStackBuilder.of(Material.BOOK)
-                .enchant(Enchantment.DIG_SPEED)
-                .hideAttributes();
-
-        double baseCost = enchant.getBasePrice();
         Optional<PrisonPlayer> prisonPlayer = playerStorage.get(uuid);
-        long tokens = prisonPlayer.map(PrisonPlayer::getTokens).orElse(0L);
+        Optional<PlayerPickaxe> playerPickaxe = pickaxeStorage.get(uuid);
 
-        setItem(12,
-                itemStackBuilder.name("&cUpgrade x1")
-                        .lore(
-                                "&7Click here to upgrade x1 of this enchant.",
-                                "",
-                                "&cCost: &f" + Number.pretty(enchant.getBasePrice()),
-                                "&cCurrent Tokens: &f" + Number.pretty(tokens)
-                        )
-                        .build(() -> {
+        MenuPopulator upgradePopulator = new MenuPopulator(this, UPGRADES);
+        MenuPopulator outlinePopulator = new MenuPopulator(this, OUTLINE);
 
-                            long cost = (long) enchant.getBasePrice();
+        if (prisonPlayer.isEmpty() || playerPickaxe.isEmpty()) {
+            getPlayer().closeInventory();
+            return;
+        }
 
-                            if (tokens < cost) {
-                                Players.msg(getPlayer(), Lang.NOT_ENOUGH_TOKENS.getMessage());
-                                return;
-                            }
+        long playerTokens = prisonPlayer.map(PrisonPlayer::getTokens).orElse(0L);
+        double enchantCost = enchant.getBasePrice();
+        boolean reachedMax = enchant.getMaxLevel() == playerPickaxe.get().getLevel(enchant.getIdentifier());
+        int[] upgrades = new int[]{1, 10, 25, 50, 100, 250, 500, 750, 1000};
 
-                            pickaxeStorage.get(uuid).ifPresent(pickaxe -> {
-                                pickaxe.addLevel(enchantHandler, enchant.getIdentifier(), 1);
-                            });
+        for (int amount : upgrades) {
+            double finalCost = enchantCost * amount;
+            boolean hasRequirements = playerTokens > finalCost;
 
-                            prisonPlayer.ifPresent(pp -> {
-                                pp.takeTokens(cost, false);
-                            });
+            String symbol = hasRequirements ? "&a&l" + Lang.BLOCK_SYMBOL.getMessage() : "&4&l" + Lang.BLOCK_SYMBOL.getMessage();
+            Material material = hasRequirements ? Material.BOOK : Material.RED_STAINED_GLASS_PANE;
+            String name = hasRequirements ? symbol + "UPGRADE X" + amount : symbol + "NOT ENOUGH TOKENS";
+            List<String> lore = new ArrayList<>(
+                    Arrays.asList(
+                            "&7Click here to upgrade the selected enchantment.",
+                            "",
+                            symbol + "&fCurrent Tokens: " + Number.pretty(playerTokens),
+                            symbol + "&fUpgrade Cost: " + Number.pretty(finalCost)
+                    )
+            );
 
-                            redraw();
+            if(reachedMax) {
+                name = "&4&l" + Lang.BLOCK_SYMBOL.getMessage() + "MAX LEVEL REACHED";
+                lore = new ArrayList<>(List.of("&cMaximum level has been achieved, cannot upgrade anymore."));
+                material = Material.RED_STAINED_GLASS_PANE;
+            }
 
-                        })
-        );
+            upgradePopulator.accept(
+                    ItemStackBuilder
+                            .of(material)
+                            .name(name)
+                            .lore(lore)
+                            .enchant(Enchantment.DIG_SPEED)
+                            .hideAttributes()
+                            .build(() -> {
 
-        setItem(13,
-                itemStackBuilder.name("&cUpgrade x10")
-                        .lore(
-                                "&7Click here to upgrade x10 of this enchant.",
-                                "",
-                                "&cCost: &f" + Number.pretty(enchant.getCost(10)),
-                                "&cCurrent Tokens: &f" + Number.pretty(tokens)
-                        )
-                        .build(() -> {
+                                if(!hasRequirements){
+                                    Players.msg(getPlayer(), Lang.NOT_ENOUGH_TOKENS.getMessage());
+                                    return;
+                                }
 
-                            long cost = (long) enchant.getCost(10);
+                                if(reachedMax){
+                                    Players.msg(getPlayer(), Lang.MAX_ENCHANT_LEVEL_REACHED.getMessage());
+                                    return;
+                                }
 
-                            if (tokens < cost) {
-                                Players.msg(getPlayer(), Lang.NOT_ENOUGH_TOKENS.getMessage());
-                                return;
-                            }
+                                playerPickaxe.get().addLevel(enchantHandler, enchant.getIdentifier(), amount);
+                                prisonPlayer.get().takeTokens((long) finalCost, false);
+                                redraw();
+                                // TODO: Notify that tokens have been taken.
+                            })
+            );
 
-                            pickaxeStorage.get(uuid).ifPresent(pickaxe -> {
-                                pickaxe.addLevel(enchantHandler, enchant.getIdentifier(), 10);
-                            });
+        }
 
-                            prisonPlayer.ifPresent(pp -> {
-                                pp.takeTokens(cost, false);
-                            });
+        outlinePopulator.getSlots().forEach(slot -> ItemStackBuilder.of(Material.GRAY_STAINED_GLASS_PANE).buildItem().build());
 
-                            redraw();
 
-                        })
-        );
-
-        setItem(14,
-                itemStackBuilder.name("&cUpgrade Max")
-                        .lore(
-                                "&7Click here to upgrade the Max amount you can.",
-                                "",
-                                "&cCost: &f" + Number.pretty(tokens / baseCost),
-                                "&cCurrent Tokens: &f" + Number.pretty(tokens)
-                        )
-                        .build(() -> {
-                            long levels = (long) (tokens / baseCost);
-
-                            pickaxeStorage.get(uuid).ifPresent(pickaxe -> {
-                                pickaxe.addLevel(enchantHandler, enchant.getIdentifier(), levels);
-                            });
-
-                            prisonPlayer.ifPresent(pp -> {
-                                pp.takeTokens(tokens, false);
-                            });
-
-                            redraw();
-
-                        })
-        );
     }
 }

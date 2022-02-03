@@ -1,5 +1,6 @@
 package net.prison.foggies.core.mines.obj;
 
+import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.regions.Region;
@@ -42,7 +43,7 @@ public class PersonalMine {
     }
 
     public void empty(){
-        final World world = mineRegion.toCuboidRegion().getWorld();
+        final World world = FaweAPI.getWorld(mineRegion.getPoint1().getWorld().getName());
 
         Schedulers.async().run(() -> {
             try(EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
@@ -50,11 +51,10 @@ public class PersonalMine {
                 editSession.flushQueue();
             }
         });
-
     }
 
     public void reset(){
-        final World world = mineRegion.toCuboidRegion().getWorld();
+        final World world = FaweAPI.getWorld(mineRegion.getPoint1().getWorld().getName());
 
         Schedulers.async().run(() -> {
             try(EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {

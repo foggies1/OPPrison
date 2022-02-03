@@ -113,7 +113,6 @@ public class PlayerPickaxe {
         Optional<EnchantBase> enchantBase = getEnchant(identifier);
         if (enchantBase.isPresent()) {
             enchantments.replace(enchantBase.get(), amount);
-            notifyUpgrade(enchantBase.get(), amount);
         } else {
             addEnchantment(enchantHandler, identifier);
         }

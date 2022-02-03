@@ -55,7 +55,7 @@ public class JackHammer extends EnchantBase {
 
     @Override
     public long getMaxLevel() {
-        return 100;
+        return 10000;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class JackHammer extends EnchantBase {
 
     @Override
     public double getBasePrice() {
-        return 100;
+        return 1000000;
     }
 
     @Override

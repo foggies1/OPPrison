@@ -1,11 +1,9 @@
 package net.prison.foggies.core.pickaxe.enchants;
 
-import net.prison.foggies.core.OPPrison;
 import net.prison.foggies.core.mines.obj.PersonalMine;
 import net.prison.foggies.core.pickaxe.api.EnchantBase;
 import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
 import net.prison.foggies.core.player.obj.PrisonPlayer;
-import net.prison.foggies.core.player.storage.PlayerStorage;
 import net.prison.foggies.core.utils.Lang;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -72,7 +70,7 @@ public class KeyFinder extends EnchantBase {
 
     @Override
     public double getBasePrice() {
-        return 0;
+        return 10000000;
     }
 
     @Override
