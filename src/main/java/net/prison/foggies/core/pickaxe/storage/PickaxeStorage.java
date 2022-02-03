@@ -4,17 +4,17 @@ import me.lucko.helper.Schedulers;
 import me.lucko.helper.utils.Players;
 import net.prison.foggies.core.OPPrison;
 import net.prison.foggies.core.pickaxe.database.PickaxeDatabase;
-import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
 import net.prison.foggies.core.pickaxe.handler.EnchantHandler;
+import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public class PickaxeStorage {
 
@@ -37,7 +37,7 @@ public class PickaxeStorage {
         Players.forEach(player -> {
             try {
                 loadPickaxe(player.getUniqueId());
-            } catch (IOException e) {
+            } catch (IOException | SQLException e) {
                 e.printStackTrace();
             }
         });
@@ -47,21 +47,28 @@ public class PickaxeStorage {
         Players.forEach(player -> unloadPickaxe(player.getUniqueId()));
     }
 
-    public void loadPickaxe(UUID uuid) throws IOException {
+    public void loadPickaxe(UUID uuid) throws IOException, SQLException {
         if (pickaxeMap.containsKey(uuid)) return;
         final Player player = Bukkit.getPlayer(uuid);
-        Optional<PlayerPickaxe> pickaxe = pickaxeDatabase.getPickaxe(uuid);
 
-        if (pickaxe.isEmpty()) {
-            PlayerPickaxe playerPickaxe = new PlayerPickaxe(enchantHandler, uuid);
-            pickaxeDatabase.insertPickaxe(playerPickaxe);
-            pickaxeMap.put(uuid, playerPickaxe);
-            return;
-        }
+        pickaxeDatabase.getPickaxe(uuid)
+                .whenComplete((pickaxe, throwable) -> {
+                    if(throwable != null){
+                        throwable.printStackTrace();
+                        return;
+                    }
 
-        pickaxeMap.put(uuid, pickaxe.get());
-        assert player != null;
-        updatePickaxe(player);
+                    pickaxe.ifPresentOrElse(pick -> {
+                        pickaxeMap.put(uuid, pick);
+                        assert player != null;
+                        updatePickaxe(player);
+                    }, () -> {
+                        PlayerPickaxe playerPickaxe = new PlayerPickaxe(enchantHandler, uuid);
+                        pickaxeDatabase.insertPickaxe(playerPickaxe);
+                        pickaxeMap.put(uuid, playerPickaxe);
+                    });
+
+                });
     }
 
     public void unloadPickaxe(UUID uuid) {

@@ -4,16 +4,14 @@ import lombok.Getter;
 import me.lucko.helper.Schedulers;
 import me.lucko.helper.utils.Players;
 import net.prison.foggies.core.OPPrison;
-import net.prison.foggies.core.player.obj.PrisonPlayer;
 import net.prison.foggies.core.player.database.PlayerDatabase;
+import net.prison.foggies.core.player.obj.PrisonPlayer;
 import org.bukkit.Bukkit;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,28 +55,27 @@ public class PlayerStorage {
     public void load(UUID uuid) {
         final String name = Bukkit.getOfflinePlayer(uuid).getName();
 
-        if (!playerDatabase.contains(uuid)) {
-            try {
-                PrisonPlayer prisonPlayer = new PrisonPlayer(uuid);
+        playerDatabase.get(uuid)
+                .whenComplete((prisonPlayer, throwable) -> {
+                    if (throwable != null) {
+                        throwable.printStackTrace();
+                        ;
+                        return;
+                    }
 
-                playerDatabase.insert(prisonPlayer);
-                prisonPlayerMap.put(uuid, prisonPlayer);
+                    prisonPlayer.ifPresentOrElse(player -> {
+                        prisonPlayerMap.put(uuid, player);
+                        log.log(Level.INFO, "Successfully loaded " + name + " from database and cached.");
+                    }, () -> {
+                        PrisonPlayer pp = new PrisonPlayer(uuid);
 
-                log.log(Level.INFO, "Inserted " + name + " into database, and cached.");
-            } catch (IOException e) {
-                log.log(Level.WARNING, "Something when wrong when inserting " + name + " into database.");
-            }
-            return;
-        }
+                        playerDatabase.insert(pp);
+                        prisonPlayerMap.put(uuid, pp);
 
-        Optional<PrisonPlayer> prisonPlayer = playerDatabase.get(uuid);
-        if (prisonPlayer.isEmpty()) {
-            log.log(Level.INFO, "Failed to load " + name + " from database.");
-            return;
-        }
+                        log.log(Level.INFO, "Inserted " + name + " into database, and cached.");
+                    });
 
-        prisonPlayerMap.put(uuid, prisonPlayer.get());
-        log.log(Level.INFO, "Successfully loaded " + name + " from database and cached.");
+                });
     }
 
     public void unload(UUID uuid) {
