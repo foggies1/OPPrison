@@ -118,8 +118,10 @@ public class EnchantUpgradeUI extends Gui {
                                 }
 
                                 playerPickaxe.get().addLevel(enchantHandler, enchant.getIdentifier(), finalAmount);
+                                playerPickaxe.get().addTokensSpent((long) finalCost);
                                 prisonPlayer.get().takeTokens((long) finalCost, false);
                                 redraw();
+
                                 // TODO: Notify that tokens have been taken.
                             })
             );

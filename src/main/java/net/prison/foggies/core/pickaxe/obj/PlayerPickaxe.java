@@ -7,6 +7,7 @@ import me.lucko.helper.item.ItemStackBuilder;
 import me.lucko.helper.utils.Players;
 import net.prison.foggies.core.pickaxe.api.EnchantBase;
 import net.prison.foggies.core.pickaxe.handler.EnchantHandler;
+import net.prison.foggies.core.utils.Lang;
 import net.prison.foggies.core.utils.Number;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -59,10 +60,12 @@ public class PlayerPickaxe {
         this.tokensSpent = 0L;
         this.level = 1L;
         this.experience = 0.0D;
-        this.name = "&aOld Reliable";
+        this.name = "&3&lStarter Pickaxe";
     }
 
     public ItemStack toItemStack(){
+
+        final String symbol = "&3&l" + Lang.BLOCK_SYMBOL.getMessage();
 
         ItemStackBuilder itemStackBuilder = ItemStackBuilder.of(Material.DIAMOND_PICKAXE)
                 .name(this.name)
@@ -76,14 +79,16 @@ public class PlayerPickaxe {
                 lore.add(enchant.getDisplayName()  + " " + Number.pretty(level));
         });
 
-        lore.add("&7&m-----------------------");
-        lore.add("&aBlocks Mined &8(&7&oRaw&8)&a: " + Number.pretty(this.rawBlocksMined));
-        lore.add("&aBlocks Mined: " + Number.pretty(this.blocksMined));
-        lore.add("&aTotal Tokens Spent: " + Number.pretty(this.tokensSpent));
-        lore.add("&aLevel: " + Number.pretty(this.level));
-        lore.add("&7&m-----------------------");
+        lore.add(symbol + "&bBlocks Mined &8(&7&oRaw&8)&a: " + Number.pretty(this.rawBlocksMined));
+        lore.add(symbol + "&bBlocks Mined: " + Number.pretty(this.blocksMined));
+        lore.add(symbol + "&bTotal Tokens Spent: " + Number.pretty(this.tokensSpent));
+        lore.add(symbol + "&bLevel: " + Number.pretty(this.level));
 
         return itemStackBuilder.lore(lore).build();
+    }
+
+    public void addTokensSpent(long amount){
+        setTokensSpent(getTokensSpent() + amount);
     }
 
     public void addBlocksMined(long amount){
