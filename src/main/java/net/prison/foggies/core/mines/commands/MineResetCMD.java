@@ -20,6 +20,8 @@ public class MineResetCMD {
                     mineStorage.get(player.getUniqueId()).ifPresent(mine -> {
                         if(mineQueueHandler.addToQueue(mine))
                             Players.msg(player, Lang.MINE_ADDED_TO_QUEUE.getMessage());
+                        else
+                            Players.msg(player, Lang.MINE_ALREADY_IN_QUEUE.getMessage());
                     });
                 })
                 .register("rm");

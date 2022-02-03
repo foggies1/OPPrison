@@ -10,6 +10,7 @@ public enum Lang {
     PREFIX("&4&lVERITY ▎ "),
     NOT_ENOUGH_TOKENS("&cYou do not have enough tokens."),
     MAX_ENCHANT_LEVEL_REACHED("&cYou've reached the maximum level for this enchantment!"),
+    MINE_ALREADY_IN_QUEUE("&cYour Mine is already in the reset queue!"),
     NOT_ENOUGH_MONEY("&cYou do not have enough money."),
     MINE_ADDED_TO_QUEUE("&7Your Mine has been added to the queue to reset!"),
     MINE_BLOCK_CHANGED("&7You've changed your Mine Block to &c%block%&7!"),
