@@ -1,6 +1,5 @@
-package net.prison.foggies.core.pickaxe.api;
+package net.prison.foggies.core.pickaxe.model;
 
-import net.prison.foggies.core.OPPrison;
 import net.prison.foggies.core.mines.obj.PersonalMine;
 import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
 import net.prison.foggies.core.player.obj.PrisonPlayer;

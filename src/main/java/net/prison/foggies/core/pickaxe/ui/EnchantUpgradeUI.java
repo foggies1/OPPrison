@@ -6,7 +6,7 @@ import me.lucko.helper.menu.scheme.MenuPopulator;
 import me.lucko.helper.menu.scheme.MenuScheme;
 import me.lucko.helper.utils.Players;
 import net.prison.foggies.core.OPPrison;
-import net.prison.foggies.core.pickaxe.api.EnchantBase;
+import net.prison.foggies.core.pickaxe.model.EnchantBase;
 import net.prison.foggies.core.pickaxe.handler.EnchantHandler;
 import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
 import net.prison.foggies.core.pickaxe.storage.PickaxeStorage;

@@ -1,7 +1,7 @@
 package net.prison.foggies.core.pickaxe.database;
 
 import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
-import net.prison.foggies.core.pickaxe.api.EnchantBase;
+import net.prison.foggies.core.pickaxe.model.EnchantBase;
 import net.prison.foggies.core.utils.Database;
 import net.prison.foggies.core.utils.SerializeUtils;
 

@@ -2,7 +2,7 @@ package net.prison.foggies.core.pickaxe.enchants;
 
 import me.lucko.helper.utils.Players;
 import net.prison.foggies.core.mines.obj.PersonalMine;
-import net.prison.foggies.core.pickaxe.api.EnchantBase;
+import net.prison.foggies.core.pickaxe.model.EnchantBase;
 import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
 import net.prison.foggies.core.player.obj.PrisonPlayer;
 import net.prison.foggies.core.utils.Lang;

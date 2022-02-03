@@ -2,7 +2,7 @@ package net.prison.foggies.core.pickaxe.handler;
 
 import lombok.Getter;
 import net.prison.foggies.core.OPPrison;
-import net.prison.foggies.core.pickaxe.api.EnchantBase;
+import net.prison.foggies.core.pickaxe.model.EnchantBase;
 import net.prison.foggies.core.pickaxe.enchants.JackHammer;
 import net.prison.foggies.core.pickaxe.enchants.Producer;
 import net.prison.foggies.core.pickaxe.enchants.TokenFinder;

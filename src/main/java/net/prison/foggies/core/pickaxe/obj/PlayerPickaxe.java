@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.lucko.helper.item.ItemStackBuilder;
 import me.lucko.helper.utils.Players;
-import net.prison.foggies.core.pickaxe.api.EnchantBase;
+import net.prison.foggies.core.pickaxe.model.EnchantBase;
 import net.prison.foggies.core.pickaxe.handler.EnchantHandler;
 import net.prison.foggies.core.utils.Lang;
 import net.prison.foggies.core.utils.Number;
