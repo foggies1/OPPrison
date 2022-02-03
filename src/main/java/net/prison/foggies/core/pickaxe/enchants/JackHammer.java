@@ -1,5 +1,6 @@
 package net.prison.foggies.core.pickaxe.enchants;
 
+import me.lucko.helper.Schedulers;
 import net.prison.foggies.core.mines.obj.PersonalMine;
 import net.prison.foggies.core.pickaxe.api.EnchantBase;
 import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
@@ -85,10 +86,13 @@ public class JackHammer extends EnchantBase {
      */
     @Override
     public void handle(PrisonPlayer prisonPlayer, PlayerPickaxe playerPickaxe, PersonalMine personalMine, BlockBreakEvent e) {
-        BackPack backPack = prisonPlayer.getBackPack();
-        long blockAffected = FaweUtils.getJackHammer(personalMine, e.getBlock().getLocation());
-        personalMine.addBlocksMined(blockAffected);
-        playerPickaxe.addBlocksMined(blockAffected);
-        backPack.addBlock(personalMine.getMineBlock(), blockAffected);
+        Schedulers.async().run(() -> {
+            BackPack backPack = prisonPlayer.getBackPack();
+            long blockAffected = FaweUtils.getJackHammer(personalMine, e.getBlock().getLocation());
+
+            personalMine.addBlocksMined(blockAffected);
+            playerPickaxe.addBlocksMined(blockAffected);
+            backPack.addBlock(personalMine.getMineBlock(), blockAffected);
+        });
     }
 }

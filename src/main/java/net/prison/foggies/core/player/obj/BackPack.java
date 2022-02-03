@@ -5,17 +5,17 @@ import lombok.Getter;
 import lombok.Setter;
 import me.lucko.helper.item.ItemStackBuilder;
 import me.lucko.helper.menu.Item;
+import me.lucko.helper.utils.Players;
+import net.milkbowl.vault.economy.Economy;
 import net.prison.foggies.core.mines.obj.MineBlock;
 import net.prison.foggies.core.utils.Lang;
 import net.prison.foggies.core.utils.Number;
 import net.prison.foggies.core.utils.StringUtils;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Setter
 @Getter
@@ -34,7 +34,7 @@ public class BackPack implements Serializable {
         contents.put(mineBlock, amount);
     }
 
-    public List<Item> getContents() {
+    public List<Item> getContents(Player player, Economy economy) {
         List<Item> itemStackList = new ArrayList<>();
         for (Map.Entry<MineBlock, Long> blocks : contents.entrySet()) {
             double sellPrice = (blocks.getKey().getSellPrice() * blocks.getValue()) * getMultiplier();
@@ -52,8 +52,14 @@ public class BackPack implements Serializable {
                             .enchant(Enchantment.DIG_SPEED)
                             .hideAttributes()
                             .build(() -> {
+                                Players.msg(player,
+                                        Lang.BACKPACK_SOLD.getMessage()
+                                                .replace("%amount%", Number.formatted(blocks.getValue()))
+                                                .replace("%price%", Number.pretty(sellPrice))
+                                );
+                                player.closeInventory();
+                                economy.depositPlayer(player, sellPrice);
                                 removeBlock(blocks.getKey(), blocks.getValue());
-                                // TODO: Make it apply money to the player....
                             })
             );
         }
@@ -83,7 +89,7 @@ public class BackPack implements Serializable {
     public void removeBlock(MineBlock mineBlock, long amount) {
         if (!contents.containsKey(mineBlock)) return;
         long currentAmount = contents.get(mineBlock);
-        if (currentAmount - amount < 0) {
+        if (currentAmount - amount <= 0) {
             contents.remove(mineBlock);
         } else {
             contents.replace(mineBlock, currentAmount - amount);

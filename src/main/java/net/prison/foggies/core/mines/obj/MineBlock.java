@@ -1,6 +1,7 @@
 package net.prison.foggies.core.mines.obj;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.bukkit.Material;
 
@@ -9,6 +10,7 @@ import java.io.Serializable;
 
 @Getter
 @AllArgsConstructor
+@EqualsAndHashCode
 public class MineBlock implements Serializable {
 
     @Serial
