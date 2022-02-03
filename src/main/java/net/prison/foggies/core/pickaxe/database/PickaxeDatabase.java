@@ -66,7 +66,7 @@ public class PickaxeDatabase extends Database {
 
     public void savePickaxe(PlayerPickaxe pickaxe) throws IOException {
         executeQuery("UPDATE " + TABLE_NAME + " SET " +
-                        "NAME=?",
+                        "NAME=?, " +
                         "RAW_BLOCKS=?," +
                         "BLOCKS=?," +
                         "TOKENS_SPENT=?," +

@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -33,6 +34,7 @@ public class MineDatabase extends Database {
                 "EXPERIENCE DOUBLE, " +
                 "COMPOSITION TEXT, " +
                 "REGION TEXT, " +
+                "FRIENDS TEXT, " +
                 "IS_PUBLIC BOOLEAN, " +
                 "PRIMARY KEY (UUID)" +
                 ")");
@@ -58,11 +60,12 @@ public class MineDatabase extends Database {
                 pMineMap.put(uuid, new PersonalMine(
                                 uuid,
                                 resultSet.getLong("BLOCKS_MINED"),
-                        resultSet.getLong("LEVEL"),
-                        resultSet.getDouble("EXPERIENCE"),
-                        (MineBlock) SerializeUtils.fromString(resultSet.getString("COMPOSITION")),
-                        (MineRegion) SerializeUtils.fromString(resultSet.getString("REGION")),
-                        resultSet.getBoolean("IS_PUBLIC")
+                                resultSet.getLong("LEVEL"),
+                                resultSet.getDouble("EXPERIENCE"),
+                                (MineBlock) SerializeUtils.fromString(resultSet.getString("COMPOSITION")),
+                                (MineRegion) SerializeUtils.fromString(resultSet.getString("REGION")),
+                                (ArrayList<UUID>) SerializeUtils.fromString(resultSet.getString("FRIENDS")),
+                                resultSet.getBoolean("IS_PUBLIC")
                         )
                 );
             }
@@ -74,28 +77,32 @@ public class MineDatabase extends Database {
         return pMineMap;
     }
 
-    public void saveMine(PersonalMine pMine)  {
+    public void saveMine(PersonalMine pMine) {
         try {
             executeQuery("UPDATE Mines SET " +
                             "BLOCKS_MINED=?,LEVEL=?," +
-                            "EXPERIENCE=?,COMPOSITION=?,REGION=?,IS_PUBLIC=? WHERE UUID=?",
+                            "EXPERIENCE=?,COMPOSITION=?,REGION=?,FRIENDS=?,IS_PUBLIC=? WHERE UUID=?",
                     pMine.getBlocksMined(), pMine.getMineLevel(),
                     pMine.getMineExperience(), SerializeUtils.toString(pMine.getMineBlock()),
-                    SerializeUtils.toString(pMine.getMineRegion()), pMine.isPublic(), pMine.getMineOwner().toString()
+                    SerializeUtils.toString(pMine.getMineRegion()),
+                    SerializeUtils.toString(pMine.getFriends()),
+                    pMine.isPublic(), pMine.getMineOwner().toString()
             );
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void insertMine(PersonalMine pMine) {
         try {
-            executeQuery("INSERT IGNORE INTO Mines VALUES(?,?,?,?,?,?,?)",
+            executeQuery("INSERT IGNORE INTO Mines VALUES(?,?,?,?,?,?,?,?)",
                     pMine.getMineOwner().toString(), pMine.getBlocksMined(), pMine.getMineLevel(),
                     pMine.getMineExperience(), SerializeUtils.toString(pMine.getMineBlock()),
-                    SerializeUtils.toString(pMine.getMineRegion()), pMine.isPublic()
+                    SerializeUtils.toString(pMine.getMineRegion()),
+                    SerializeUtils.toString(pMine.getFriends()),
+                    pMine.isPublic()
             );
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

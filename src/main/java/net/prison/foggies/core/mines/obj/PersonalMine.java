@@ -14,6 +14,7 @@ import me.lucko.helper.Schedulers;
 import me.lucko.helper.utils.Players;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,7 +29,22 @@ public class PersonalMine {
     private double mineExperience;
     private MineBlock mineBlock;
     private MineRegion mineRegion;
+    private ArrayList<UUID> friends;
     private boolean isPublic;
+
+    public boolean hasAccess(UUID uuid){
+        return friends.contains(uuid) || mineOwner.equals(uuid);
+    }
+
+    public void giveAccess(UUID uuid){
+        if(friends.contains(uuid)) return;
+        friends.add(uuid);
+    }
+
+    public void removeAccess(UUID uuid){
+        if(!friends.contains(uuid)) return;
+        friends.remove(uuid);
+    }
 
     public void addExperience(double amount){
         setMineExperience(getMineExperience() + amount);

@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -65,6 +66,7 @@ public class MineStorage {
                         new MineRegion(new SimpleLocation(next), new SimpleLocation(right),
                                 new SimpleLocation(left), new SimpleLocation(maxRight),
                                 new SimpleLocation(maxLeft)),
+                        new ArrayList<>(),
                         false
                 );
 

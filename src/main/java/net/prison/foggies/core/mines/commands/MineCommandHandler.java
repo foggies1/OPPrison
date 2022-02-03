@@ -11,5 +11,6 @@ public class MineCommandHandler {
         new MineBlockCMD(plugin);
         new MineEmptyCMD(plugin);
         new MineResetCMD(plugin);
+        new MinePanelCMD(plugin);
     }
 }
