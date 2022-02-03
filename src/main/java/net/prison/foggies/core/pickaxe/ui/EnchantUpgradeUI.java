@@ -62,14 +62,22 @@ public class EnchantUpgradeUI extends Gui {
             return;
         }
 
+        final long maxLevel = enchant.getMaxLevel();
+        final long currentLevel = playerPickaxe.get().getLevel(enchant.getIdentifier());
+
         long playerTokens = prisonPlayer.map(PrisonPlayer::getTokens).orElse(0L);
         double enchantCost = enchant.getBasePrice();
-        boolean reachedMax = enchant.getMaxLevel() == playerPickaxe.get().getLevel(enchant.getIdentifier());
+        boolean reachedMax = maxLevel == currentLevel;
+
         int[] upgrades = new int[]{1, 10, 25, 50, 100, 250, 500, 750, 1000};
 
         for (int amount : upgrades) {
+
+            if(amount > maxLevel) amount = (int) maxLevel;
+            if(amount + currentLevel > maxLevel) amount = (int) (maxLevel - currentLevel);
+
             double finalCost = enchantCost * amount;
-            boolean hasRequirements = playerTokens > finalCost;
+            boolean hasRequirements = playerTokens >= finalCost;
 
             String symbol = hasRequirements ? "&a&l" + Lang.BLOCK_SYMBOL.getMessage() : "&4&l" + Lang.BLOCK_SYMBOL.getMessage();
             Material material = hasRequirements ? Material.BOOK : Material.RED_STAINED_GLASS_PANE;
@@ -89,6 +97,7 @@ public class EnchantUpgradeUI extends Gui {
                 material = Material.RED_STAINED_GLASS_PANE;
             }
 
+            int finalAmount = amount;
             upgradePopulator.accept(
                     ItemStackBuilder
                             .of(material)
@@ -108,7 +117,7 @@ public class EnchantUpgradeUI extends Gui {
                                     return;
                                 }
 
-                                playerPickaxe.get().addLevel(enchantHandler, enchant.getIdentifier(), amount);
+                                playerPickaxe.get().addLevel(enchantHandler, enchant.getIdentifier(), finalAmount);
                                 prisonPlayer.get().takeTokens((long) finalCost, false);
                                 redraw();
                                 // TODO: Notify that tokens have been taken.

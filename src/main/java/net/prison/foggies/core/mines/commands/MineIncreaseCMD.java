@@ -17,7 +17,7 @@ public class MineIncreaseCMD {
                     int increaseSize = c.arg(0).parseOrFail(Integer.class);
 
                     mineStorage.get(c.sender().getUniqueId()).ifPresent(mine -> {
-                                mine.getMineRegion().increaseMineRegion(c.sender(), increaseSize);
+                                mine.getMineRegion().increaseMineRegion(increaseSize);
                                 mine.reset();
                             }
                     );

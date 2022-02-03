@@ -24,9 +24,7 @@ public class PlayerDatabase extends Database {
         executeQuery("CREATE TABLE IF NOT EXISTS PlayerData" +
                 "(" +
                 "UUID VARCHAR(37), " +
-                "LEVEL BIGINT, " +
                 "PRESTIGE BIGINT, " +
-                "LEVEL_EXPERIENCE DOUBLE, " +
                 "AUTO_PRESTIGE BOOLEAN, " +
                 "TOKENS BIGINT, " +
                 "TOTAL_TOKENS_SPENT BIGINT," +
@@ -56,24 +54,23 @@ public class PlayerDatabase extends Database {
     }
 
     public void insert(PrisonPlayer prisonPlayer) throws IOException {
-        executeQuery("INSERT IGNORE INTO PlayerData VALUES(?,?,?,?,?,?,?,?,?,?)",
-                prisonPlayer.getUUID().toString(), prisonPlayer.getLevel(), prisonPlayer.getPrestige(),
-                prisonPlayer.getLevelExperience(), prisonPlayer.isAutoPrestige(),
+        executeQuery("INSERT IGNORE INTO PlayerData VALUES(?,?,?,?,?,?,?,?)",
+                prisonPlayer.getUUID().toString(), prisonPlayer.getPrestige(),
+                 prisonPlayer.isAutoPrestige(),
                 prisonPlayer.getTokens(), prisonPlayer.getTotalTokensSpent(), prisonPlayer.getTotalTokensGained(),
                 prisonPlayer.getBlocksMined(), SerializeUtils.toString(prisonPlayer.getBackPack()));
     }
 
     public void save(PrisonPlayer prisonPlayer) throws IOException {
-        executeQuery("UPDATE PlayerData SET LEVEL=?," +
+        executeQuery("UPDATE PlayerData SET " +
                         "PRESTIGE=?," +
-                        "LEVEL_EXPERIENCE=?," +
                         "AUTO_PRESTIGE=?," +
                         "TOKENS=?," +
                         "TOTAL_TOKENS_SPENT=?," +
                         "TOTAL_TOKENS_GAINED=?," +
                         "BLOCKS_MINED=?," +
                         "BACKPACK=? WHERE UUID=?",
-                prisonPlayer.getLevel(), prisonPlayer.getPrestige(), prisonPlayer.getLevelExperience(),
+                prisonPlayer.getPrestige(),
                 prisonPlayer.isAutoPrestige(), prisonPlayer.getTokens(),
                 prisonPlayer.getTotalTokensSpent(), prisonPlayer.getTotalTokensGained(),
                 prisonPlayer.getBlocksMined(),

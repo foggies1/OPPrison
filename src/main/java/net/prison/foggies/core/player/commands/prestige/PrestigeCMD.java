@@ -16,7 +16,7 @@ public class PrestigeCMD {
                 .assertPlayer()
                 .handler(c -> {
                     final Player player = c.sender();
-                    playerStorage.get(player.getUniqueId()).ifPresent(p -> p.prestige(economy));
+                    playerStorage.get(player.getUniqueId()).ifPresent(p -> p.prestige(c.sender(), economy));
 
                 })
                 .register("prestige");

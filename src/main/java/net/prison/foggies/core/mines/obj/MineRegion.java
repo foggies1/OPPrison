@@ -5,12 +5,8 @@ import com.sk89q.worldedit.regions.CuboidRegion;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import me.lucko.helper.utils.Players;
 import net.prison.foggies.core.utils.Cuboid;
-import net.prison.foggies.core.utils.Lang;
-import net.prison.foggies.core.utils.Number;
 import net.prison.foggies.core.utils.SimpleLocation;
-import org.bukkit.entity.Player;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -25,20 +21,20 @@ public class MineRegion implements Serializable {
 
     private SimpleLocation spawnPoint, point1, point2, maxPoint1, maxPoint2;
 
-    public void increaseMineRegion(Player player, int amount){
+    public boolean increaseMineRegion(int amount){
         Cuboid outerRegion = outerRegion();
 
         SimpleLocation right = new SimpleLocation(point1.clone().toBukkitLocation().add(amount, 0, amount));
         SimpleLocation left = new SimpleLocation(point2.clone().toBukkitLocation().subtract(amount, 0 ,amount));
 
         if(!outerRegion.contains(left.toBukkitLocation()) || !outerRegion.contains(right.toBukkitLocation())) {
-            Players.msg(player, Lang.REACHED_MAX_MINE_SIZE.getMessage());
-            return;
+            increaseMineRegion(amount-1);
+            return false;
         }
 
         setPoint1(right);
         setPoint2(left);
-        Players.msg(player, Lang.MINE_SIZE_INCREASED.getMessage().replace("%amount%", Number.pretty(amount)));
+        return true;
     }
 
     public CuboidRegion toCuboidRegion(){

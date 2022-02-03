@@ -1,7 +1,6 @@
 package net.prison.foggies.core.player.commands;
 
 import net.prison.foggies.core.OPPrison;
-import net.prison.foggies.core.player.commands.level.*;
 import net.prison.foggies.core.player.commands.prestige.*;
 import net.prison.foggies.core.player.commands.tokens.TokenAddCMD;
 import net.prison.foggies.core.player.commands.tokens.TokenSetCMD;
@@ -15,14 +14,6 @@ public class PlayerCommandHandler {
         new SetPrestigeCMD(plugin);
         new TakePrestigeCMD(plugin);
         new PrestigeMaxCMD(plugin);
-
-        new AddExperienceCMD(plugin);
-        new SetExperienceCMD(plugin);
-        new TakeLevelCMD(plugin);
-
-        new AddLevelCMD(plugin);
-        new SetLevelCMD(plugin);
-        new TakeLevelCMD(plugin);
 
         new PlayerDataCMD(plugin);
         new TokenAddCMD(plugin);

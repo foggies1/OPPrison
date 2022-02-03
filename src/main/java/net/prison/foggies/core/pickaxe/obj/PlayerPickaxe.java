@@ -134,7 +134,7 @@ public class PlayerPickaxe {
     }
 
     private void notifyUpgrade(EnchantBase enchant, long amount){
-        Players.msg(toBukkit(), "&aYou've upgraded " + enchant.getDisplayName() + " by x" + Number.pretty(amount));
+        Players.msg(toBukkit(), "&7You've upgraded " + enchant.getDisplayName() + " by &7x" + Number.pretty(amount) + ".");
     }
 
     private Player toBukkit(){

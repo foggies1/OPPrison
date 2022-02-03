@@ -4,12 +4,15 @@ import me.lucko.helper.item.ItemStackBuilder;
 import me.lucko.helper.menu.Gui;
 import me.lucko.helper.menu.scheme.MenuPopulator;
 import me.lucko.helper.menu.scheme.MenuScheme;
-import me.lucko.helper.utils.Players;
 import net.prison.foggies.core.OPPrison;
 import net.prison.foggies.core.mines.obj.PersonalMine;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 public class MineFriendsUI extends Gui {
 
@@ -42,12 +45,21 @@ public class MineFriendsUI extends Gui {
         MenuPopulator friendPopulator = new MenuPopulator(this, FRIENDS);
         outlinePopulator.getSlots().forEach(slot -> outlinePopulator.accept(ItemStackBuilder.of(Material.CYAN_STAINED_GLASS_PANE).buildItem().build()));
 
+
+
         personalMine.getFriends()
                 .forEach(friend -> {
+                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(friend);
+
+                    ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+                    SkullMeta skull = (SkullMeta) head.getItemMeta();
+                    skull.setOwningPlayer(offlinePlayer);
+                    head.setItemMeta(skull);
+
                     friendPopulator.accept(
                             ItemStackBuilder
-                                    .of(Material.PLAYER_HEAD)
-                                    .name("&b" + Players.getOffline(friend).get().getName())
+                                    .of(head)
+                                    .name("&b" + offlinePlayer.getName())
                                     .enchant(Enchantment.DIG_SPEED)
                                     .hideAttributes()
                                     .buildItem().build()

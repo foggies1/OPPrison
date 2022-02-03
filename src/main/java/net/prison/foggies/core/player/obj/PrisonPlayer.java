@@ -2,14 +2,12 @@ package net.prison.foggies.core.player.obj;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.lucko.helper.text3.Text;
-import me.lucko.helper.text3.TextComponent;
-import me.lucko.helper.text3.event.HoverEvent;
+import me.lucko.helper.Schedulers;
+import me.lucko.helper.utils.Players;
 import net.milkbowl.vault.economy.Economy;
 import net.prison.foggies.core.utils.Lang;
 import net.prison.foggies.core.utils.Number;
 import net.prison.foggies.core.utils.SerializeUtils;
-import net.prison.foggies.core.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -24,14 +22,10 @@ import java.util.UUID;
 
 public class PrisonPlayer {
 
-    private static final int MAX_LEVEL = 100;
-    private static final double PRESTIGE_BASE_COST = 10000.0D;
-    private static final double LEVEL_BASE_COST = 1000.0D;
+    private static final double BASE_COST = 2D;
 
     private UUID UUID;
-    private long level;
     private long prestige;
-    private double levelExperience;
     private boolean autoPrestige;
     private long tokens;
     private long totalTokensSpent;
@@ -48,9 +42,7 @@ public class PrisonPlayer {
      */
     public PrisonPlayer(UUID uuid, ResultSet resultSet) throws SQLException, IOException, ClassNotFoundException {
         this.UUID = uuid;
-        this.level = resultSet.getLong("LEVEL");
         this.prestige = resultSet.getLong("PRESTIGE");
-        this.levelExperience = resultSet.getDouble("LEVEL_EXPERIENCE");
         this.autoPrestige = resultSet.getBoolean("AUTO_PRESTIGE");
         this.tokens = resultSet.getLong("TOKENS");
         this.totalTokensSpent = resultSet.getLong("TOTAL_TOKENS_SPENT");
@@ -66,9 +58,7 @@ public class PrisonPlayer {
      */
     public PrisonPlayer(UUID uuid) {
         this.UUID = uuid;
-        this.level = 1L;
         this.prestige = 0L;
-        this.levelExperience = 0.0D;
         this.autoPrestige = false;
         this.tokens = 0L;
         this.totalTokensSpent = 0L;
@@ -77,43 +67,57 @@ public class PrisonPlayer {
         this.backPack = new BackPack(new HashMap<>(), 0L, 1L, 1000000000L);
     }
 
-    public double getLevelUpCost() {
-        return Math.pow(getLevel(), 3) * LEVEL_BASE_COST;
-    }
+    public void prestige(Player player, Economy economy) {
+        long prestige = getPrestige();
+        double cost = Math.pow((prestige + 1) * BASE_COST, 2);
+        double money = economy.getBalance(player);
 
-    public double getPrestigeCost(long amount) {
-        return amount * PRESTIGE_BASE_COST;
-    }
+        if (money < cost) {
+            Players.msg(player, Lang.NOT_ENOUGH_MONEY.getMessage());
+            return;
+        }
 
-    public long getMaxPrestigeAmount(double balance) {
-        return (long) (balance / PRESTIGE_BASE_COST);
-    }
-
-    public void prestigeMax(Economy economy) {
-        long prestiges = getLevel() / MAX_LEVEL;
-        double cost = getPrestigeCost(prestiges);
-
-        if (prestiges <= 0) return;
-        if (economy.getBalance(toBukkit()) < cost) return;
-
-        economy.withdrawPlayer(toBukkit(), cost);
-        addPrestige(prestiges);
-        takeLevel(MAX_LEVEL * prestiges);
-        sendPrestigeMessage(prestiges, cost);
-
-    }
-
-    public void prestige(Economy economy) {
-        if (getLevel() < MAX_LEVEL) return;
-        double cost = getPrestigeCost(1);
-        if (economy.getBalance(toBukkit()) < cost) return;
-
-        economy.withdrawPlayer(toBukkit(), cost);
+        economy.withdrawPlayer(player, cost);
         addPrestige(1);
-        sendPrestigeMessage(1, cost);
+
+        Players.msg(player, Lang.PRESTIGE.getMessage()
+                .replace("%prestiges%", Number.pretty(1))
+                .replace("%price%", Number.pretty(cost))
+        );
     }
 
-    public void addBlocksMined(long amount){
+    public void prestigeMax(Player player, Economy economy) {
+        Schedulers.async().run(() -> {
+            long prestige = getPrestige();
+            long prestigeGained = 0L;
+            double totalCost = 0.0D;
+            double balance = economy.getBalance(player);
+
+            while(true){
+
+                double cost = Math.pow((prestige + prestigeGained) * BASE_COST, 2);
+
+                if (balance < cost) {
+                    break;
+                }
+
+                prestigeGained++;
+                totalCost += cost;
+                balance -= cost;
+
+            }
+
+            economy.withdrawPlayer(player, totalCost);
+            addPrestige(prestigeGained);
+            Players.msg(player, Lang.PRESTIGE.getMessage()
+                    .replace("%prestiges%", Number.pretty(prestigeGained))
+                    .replace("%price%", Number.pretty(totalCost))
+            );
+        });
+
+    }
+
+    public void addBlocksMined(long amount) {
         setBlocksMined(getBlocksMined() + amount);
     }
 
@@ -131,51 +135,19 @@ public class PrisonPlayer {
         setTotalTokensGained(getTotalTokensGained() + amount);
     }
 
-    public void addLevel(long amount, boolean viaExperience) {
-        setLevel(getLevel() + amount);
-        if (viaExperience)
-            sendLevelUpMessage(amount);
-    }
-
-    public void addExperience(double amount) {
-
-        double levelUpCost = getLevelUpCost();
-        long levels = 0;
-        double experience = getLevelExperience() + amount;
-
-        if (experience > levelUpCost) {
-            while (experience > levelUpCost) {
-                levels++;
-                experience -= levelExperience;
-            }
-        }
-
-        addLevel(levels, true);
-        setLevelExperience(experience);
-    }
 
     public void addPrestige(long amount) {
         setPrestige(getPrestige() + amount);
     }
 
-    public void takeBlocksMined(long amount){
-        if(getBlocksMined() - amount < 0) amount = getBlocksMined();
+    public void takeBlocksMined(long amount) {
+        if (getBlocksMined() - amount < 0) amount = getBlocksMined();
         setBlocksMined(getBlocksMined() - amount);
     }
 
     public void takePrestige(long amount) {
         if (getPrestige() - amount < 0) amount = getPrestige();
         setPrestige(getPrestige() - amount);
-    }
-
-    public void takeExperience(double amount) {
-        if (getLevelExperience() - amount < 0) amount = getLevelExperience();
-        setLevelExperience(getLevelExperience() - amount);
-    }
-
-    public void takeLevel(long amount) {
-        if (getLevel() - amount < 0) amount = getLevel();
-        setLevel(getLevel() - amount);
     }
 
     public void takeTokens(long amount, boolean admin) {
@@ -197,36 +169,6 @@ public class PrisonPlayer {
 
     public Player toBukkit() {
         return Bukkit.getPlayer(this.UUID);
-    }
-
-    private void sendPrestigeMessage(final long prestigeAmount, final double cost) {
-        Text.sendMessage(toBukkit(),
-                TextComponent.of(StringUtils.colorPrefix(Lang.PRESTIGE.getMessage()))
-                        .hoverEvent(HoverEvent.showText(
-                                TextComponent.of(
-                                        StringUtils.color("&7Below is a summary of your recent prestige" + "\n" +
-                                                "&7activity:" + "\n" +
-                                                "" + "\n" +
-                                                "&c&l" + Lang.BLOCK_SYMBOL.getMessage() + "&fPrestiges: &4" + Number.pretty(prestigeAmount) + "\n" +
-                                                "&c&l" + Lang.BLOCK_SYMBOL.getMessage() + "&fCost: &f$" + Number.pretty(cost)
-                                        ))
-                        ))
-        );
-    }
-
-    private void sendLevelUpMessage(final long levelAmount) {
-        if (levelAmount <= 0) return;
-        Text.sendMessage(toBukkit(),
-                TextComponent.of(StringUtils.colorPrefix(Lang.LEVEL_UP.getMessage()))
-                        .hoverEvent(HoverEvent.showText(
-                                TextComponent.of(
-                                        StringUtils.color("&7Below is a summary of your recent levelling" + "\n" +
-                                                "&7activity:" + "\n" +
-                                                "" + "\n" +
-                                                "&c&l" + Lang.BLOCK_SYMBOL.getMessage() + "&fLevels: &4" + Number.pretty(levelAmount)
-                                        ))
-                        ))
-        );
     }
 
 }

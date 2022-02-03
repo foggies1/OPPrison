@@ -15,7 +15,7 @@ public class MinePanelCMD {
                     final OfflinePlayer target = c.arg(0).parseOrFail(OfflinePlayer.class);
                     new MinePanelUI(c.sender(), target, plugin).open();
                 })
-                .register("minepanel");
+                .register("panel");
     }
 
 }

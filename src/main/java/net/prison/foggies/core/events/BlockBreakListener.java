@@ -1,6 +1,5 @@
 package net.prison.foggies.core.events;
 
-import com.mojang.datafixers.util.Either;
 import me.lucko.helper.Events;
 import net.minecraft.world.level.block.Blocks;
 import net.prison.foggies.core.OPPrison;
@@ -32,26 +31,16 @@ public class BlockBreakListener {
                             Optional<PrisonPlayer> prisonPlayer = playerStorage.get(player.getUniqueId());
                             Optional<PlayerPickaxe> playerPickaxe = pickaxeStorage.get(player.getUniqueId());
 
-
-                            if(currentMine.isEmpty()){
-                                System.out.println("Mine was empty");
-                            }
-
-                            if(prisonPlayer.isEmpty()){
-                                System.out.println("Prison player was empty");
-                            }
-
-                            if(playerPickaxe.isEmpty()){
-                                System.out.println("Pickaxe was empty.");
-                            }
-
                             if(currentMine.isEmpty() || prisonPlayer.isEmpty() || playerPickaxe.isEmpty()) {
                                 event.setCancelled(true);
                                 return;
                             }
 
                             currentMine.get().addBlocksMined(1L);
+                            currentMine.get().addExperience(3L);
                             prisonPlayer.get().addBlocksMined(1L);
+                            prisonPlayer.get().getBackPack().addBlock(currentMine.get().getMineBlock(), 1L);
+
                             playerPickaxe.ifPresent(pickaxe -> {
                                 pickaxe.addRawBlocksMined(1L);
                                 pickaxe.getEnchantments()

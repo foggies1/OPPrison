@@ -16,7 +16,7 @@ public class MineTeleportCMD {
                     final Player player = c.sender();
                     mineStorage.get(player.getUniqueId()).ifPresent(personalMine -> player.teleport(personalMine.getMineRegion().getSpawnPoint().toBukkitLocation()));
                 })
-                .register("minetp");
+                .register("vm");
 
     }
 }

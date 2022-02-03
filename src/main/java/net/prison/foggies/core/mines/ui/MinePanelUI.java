@@ -5,11 +5,13 @@ import me.lucko.helper.menu.Gui;
 import me.lucko.helper.menu.scheme.MenuPopulator;
 import me.lucko.helper.menu.scheme.MenuScheme;
 import me.lucko.helper.utils.Players;
+import net.md_5.bungee.api.ChatColor;
 import net.prison.foggies.core.OPPrison;
 import net.prison.foggies.core.mines.handler.MineQueueHandler;
 import net.prison.foggies.core.mines.obj.PersonalMine;
 import net.prison.foggies.core.utils.Lang;
 import net.prison.foggies.core.utils.Number;
+import net.prison.foggies.core.utils.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
@@ -21,7 +23,7 @@ public class MinePanelUI extends Gui {
 
     private final OPPrison plugin;
     private final MineQueueHandler queueHandler;
-    private String targetName;
+    private final String targetName;
     private Optional<PersonalMine> personalMine;
 
     public MinePanelUI(Player player, OfflinePlayer target, OPPrison plugin) {
@@ -49,17 +51,20 @@ public class MinePanelUI extends Gui {
             return;
         }
 
+        PersonalMine pMine = personalMine.get();
+        final long totalBlocks = pMine.getMineRegion().innerRegion().getTotalBlockSize();
+
         MenuPopulator outlinePopulator = new MenuPopulator(this, OUTLINE);
         outlinePopulator.getSlots().forEach(slot -> outlinePopulator.accept(ItemStackBuilder.of(Material.CYAN_STAINED_GLASS_PANE).buildItem().build()));
 
         final String symbol = "&3&l" + Lang.BLOCK_SYMBOL.getMessage();
         boolean hasAccess = personalMine.get().hasAccess(getPlayer().getUniqueId()) || getPlayer().isOp();
-        String accessString = hasAccess ? "&8(&a&lACCESSABLE&8)" : "&8(&4&lNO ACCESS&8)";
+        String accessString = hasAccess ? "&8(&a&lACCESSIBLE&8)" : "&8(&4&lNO ACCESS&8)";
 
         setItem(20,
                 ItemStackBuilder
                         .of(Material.IRON_DOOR)
-                        .name("&bVisit Mine ")
+                        .name("&bVisit Mine")
                         .lore(
                                 "&7Click here to visit this mine,",
                                 "&7it's owned by &b" + targetName + "&7.",
@@ -73,7 +78,7 @@ public class MinePanelUI extends Gui {
                                 Players.msg(getPlayer(), Lang.NO_MINE_ACCESS.getMessage());
                                 return;
                             }
-                            getPlayer().teleport(personalMine.get().getMineRegion().getSpawnPoint().toBukkitLocation());
+                            getPlayer().teleport(pMine.getMineRegion().getSpawnPoint().toBukkitLocation());
                         })
         );
 
@@ -85,7 +90,7 @@ public class MinePanelUI extends Gui {
                                 "&7Click here to view the list of",
                                 "&7people who have access to this mine.",
                                 "",
-                                symbol + "&bFriend Amount: &f" + Number.pretty(personalMine.get().getFriends().size())
+                                symbol + "&bFriend Amount: &f" + Number.pretty(pMine.getFriends().size())
                         )
                         .enchant(Enchantment.ARROW_DAMAGE)
                         .hideAttributes()
@@ -95,7 +100,7 @@ public class MinePanelUI extends Gui {
                                 return;
                             }
 
-                            new MineFriendsUI(getPlayer(), plugin, personalMine.get()).open();
+                            new MineFriendsUI(getPlayer(), plugin, pMine).open();
 
                         })
         );
@@ -109,7 +114,7 @@ public class MinePanelUI extends Gui {
                                 "&7mine block, each mine block has a different",
                                 "&7sell price.",
                                 "",
-                                symbol + "&bCurrent Sell Price: &f$" + Number.pretty(personalMine.get().getMineBlock().getSellPrice())
+                                symbol + "&bCurrent Sell Price: &f$" + Number.pretty(pMine.getMineBlock().getSellPrice())
                         )
                         .enchant(Enchantment.ARROW_DAMAGE)
                         .hideAttributes()
@@ -129,7 +134,7 @@ public class MinePanelUI extends Gui {
                         .lore(
                                 "&7Click here to reset this mine.",
                                 "",
-                                symbol + "&bBlock Total: &f$" + Number.pretty(personalMine.get().getMineRegion().innerRegion().getTotalBlockSize())
+                                symbol + "&bBlock Total: &f" + Number.pretty(totalBlocks)
                         )
                         .enchant(Enchantment.ARROW_DAMAGE)
                         .hideAttributes()
@@ -139,12 +144,33 @@ public class MinePanelUI extends Gui {
                                 return;
                             }
 
-                            if (queueHandler.addToQueue(personalMine.get()))
+                            if (queueHandler.addToQueue(pMine))
                                 Players.msg(getPlayer(), Lang.MINE_ADDED_TO_QUEUE.getMessage());
                             else
                                 Players.msg(getPlayer(), Lang.MINE_ALREADY_IN_QUEUE.getMessage());
                         })
         );
+
+        setItem(32,
+                ItemStackBuilder
+                        .of(Material.EXPERIENCE_BOTTLE)
+                        .name("&bMine Progress")
+                        .lore(
+                                "&7Below is a list of information on the mines",
+                                "&7progression.",
+                                "",
+                                symbol + "&bMine Level: &f" + Number.pretty(pMine.getMineLevel()),
+                                symbol + "&bBlocks Mined: &f" + Number.pretty(pMine.getBlocksMined()),
+                                symbol + "&bBlock Sell Price: &f$" + Number.pretty(pMine.getMineBlock().getSellPrice()),
+                                symbol + "&bTotal Blocks: &f" + Number.pretty(totalBlocks),
+                                "",
+                                symbol + "&bNext Level Progress: ",
+                                "   &8[" + StringUtils.getProgressBar((int) pMine.getMineExperience(), (int) pMine.getLevelCost(), 35, ':', ChatColor.BLUE, ChatColor.GRAY) + "&8]"
+                                )
+                        .enchant(Enchantment.ARROW_DAMAGE)
+                        .hideAttributes().buildItem().build()
+        );
+
 
     }
 }

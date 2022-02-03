@@ -8,6 +8,7 @@ import net.prison.foggies.core.player.obj.BackPack;
 import net.prison.foggies.core.player.obj.PrisonPlayer;
 import net.prison.foggies.core.utils.FaweUtils;
 import net.prison.foggies.core.utils.Lang;
+import net.prison.foggies.core.utils.Math;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class JackHammer extends EnchantBase {
 
     @Override
     public long getMaxLevel() {
-        return 10000;
+        return 1000;
     }
 
     @Override
@@ -67,7 +68,7 @@ public class JackHammer extends EnchantBase {
 
     @Override
     public float getChance() {
-        return 1.0F;
+        return 0.1F;
     }
 
     @Override
@@ -86,6 +87,9 @@ public class JackHammer extends EnchantBase {
      */
     @Override
     public void handle(PrisonPlayer prisonPlayer, PlayerPickaxe playerPickaxe, PersonalMine personalMine, BlockBreakEvent e) {
+        long level = playerPickaxe.getLevel(getIdentifier());
+        if (!Math.isRandom(getChance() * level, getMaxLevel())) return;
+
         Schedulers.async().run(() -> {
             BackPack backPack = prisonPlayer.getBackPack();
             long blockAffected = FaweUtils.getJackHammer(personalMine, e.getBlock().getLocation());

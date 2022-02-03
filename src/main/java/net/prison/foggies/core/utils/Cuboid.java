@@ -21,12 +21,12 @@ public class Cuboid {
 
     public Cuboid(Location point1, Location point2) {
         this.worldName = point1.getWorld().getName();
-        this.xMin = Math.min(point1.getBlockX(), point2.getBlockX());
-        this.xMax = Math.max(point1.getBlockX(), point2.getBlockX());
-        this.yMin = Math.min(point1.getBlockY(), point2.getBlockY());
-        this.yMax = Math.max(point1.getBlockY(), point2.getBlockY());
-        this.zMin = Math.min(point1.getBlockZ(), point2.getBlockZ());
-        this.zMax = Math.max(point1.getBlockZ(), point2.getBlockZ());
+        this.xMin = java.lang.Math.min(point1.getBlockX(), point2.getBlockX());
+        this.xMax = java.lang.Math.max(point1.getBlockX(), point2.getBlockX());
+        this.yMin = java.lang.Math.min(point1.getBlockY(), point2.getBlockY());
+        this.yMax = java.lang.Math.max(point1.getBlockY(), point2.getBlockY());
+        this.zMin = java.lang.Math.min(point1.getBlockZ(), point2.getBlockZ());
+        this.zMax = java.lang.Math.max(point1.getBlockZ(), point2.getBlockZ());
         this.world = point1.getWorld();
     }
 
@@ -61,9 +61,9 @@ public class Cuboid {
 
     public Location getRandomLocation() {
         final Random rand = new Random();
-        final int x = rand.nextInt(Math.abs(this.xMax - this.xMin) + 1) + this.xMin;
-        final int y = rand.nextInt(Math.abs(this.yMax - this.yMin) + 1) + this.yMin;
-        final int z = rand.nextInt(Math.abs(this.zMax - this.zMin) + 1) + this.zMin;
+        final int x = rand.nextInt(java.lang.Math.abs(this.xMax - this.xMin) + 1) + this.xMin;
+        final int y = rand.nextInt(java.lang.Math.abs(this.yMax - this.yMin) + 1) + this.yMin;
+        final int z = rand.nextInt(java.lang.Math.abs(this.zMax - this.zMin) + 1) + this.zMin;
         return new Location(this.world, x, y, z);
     }
 

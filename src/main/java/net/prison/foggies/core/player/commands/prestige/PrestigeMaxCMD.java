@@ -16,10 +16,10 @@ public class PrestigeMaxCMD {
                 .assertPlayer()
                 .handler(c -> {
                     final Player player = c.sender();
-                    playerStorage.get(player.getUniqueId()).ifPresent(p -> p.prestigeMax(economy));
+                    playerStorage.get(player.getUniqueId()).ifPresent(p -> p.prestigeMax(c.sender(), economy));
 
                 })
-                .register("prestigemax");
+                .register("prestigemax", "pmax");
 
     }
 }

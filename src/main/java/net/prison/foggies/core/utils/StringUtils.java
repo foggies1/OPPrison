@@ -1,5 +1,6 @@
 package net.prison.foggies.core.utils;
 
+import com.google.common.base.Strings;
 import org.bukkit.ChatColor;
 
 public class StringUtils {
@@ -10,6 +11,15 @@ public class StringUtils {
 
     public static String colorPrefix(String message){
         return ChatColor.translateAlternateColorCodes('&', Lang.PREFIX.getMessage() + message);
+    }
+
+    public static String getProgressBar(int current, int max, int totalBars, char symbol, net.md_5.bungee.api.ChatColor completedColor,
+                                        net.md_5.bungee.api.ChatColor notCompletedColor) {
+        float percent = (float) current / max;
+        int progressBars = (int) (totalBars * percent);
+
+        return Strings.repeat("" + completedColor + symbol, progressBars)
+                + Strings.repeat("" + notCompletedColor + symbol, totalBars - progressBars);
     }
 
     public static String formatName(String input){

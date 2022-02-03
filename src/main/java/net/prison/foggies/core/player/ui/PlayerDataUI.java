@@ -36,7 +36,6 @@ public class PlayerDataUI extends Gui {
                         .lore(
                                 "&7Below is &c" + getPlayer().getName() + "'s &7Player data.",
                                 "",
-                                prefix + "&cLevel: &f" + Number.pretty(prisonPlayer.getLevel()),
                                 prefix + "&cPrestige: &f" + Number.pretty(prisonPlayer.getPrestige()),
                                 prefix + "&cTokens: &f" + Number.pretty(prisonPlayer.getTokens()),
                                 prefix + "&cTotal Tokens Gained: &f" + Number.pretty(prisonPlayer.getTotalTokensGained()),
