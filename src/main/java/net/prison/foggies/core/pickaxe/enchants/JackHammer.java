@@ -1,20 +1,11 @@
 package net.prison.foggies.core.pickaxe.enchants;
 
-import com.fastasyncworldedit.core.Fawe;
-import com.fastasyncworldedit.core.FaweAPI;
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldedit.regions.Region;
-import com.sk89q.worldedit.regions.factory.CuboidRegionFactory;
-import com.sk89q.worldedit.world.block.BlockTypes;
 import net.prison.foggies.core.mines.obj.PersonalMine;
 import net.prison.foggies.core.pickaxe.api.EnchantBase;
 import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
 import net.prison.foggies.core.player.obj.PrisonPlayer;
-import net.prison.foggies.core.utils.Cuboid;
+import net.prison.foggies.core.utils.FaweUtils;
 import net.prison.foggies.core.utils.Lang;
-import net.prison.foggies.core.utils.SimpleLocation;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import java.util.ArrayList;
@@ -35,7 +26,7 @@ public class JackHammer extends EnchantBase {
 
     @Override
     public String getDisplayName() {
-        return getColor() +  "&l" + getSymbol() + getColor() + "JackHammer";
+        return getColor() + "&l" + getSymbol() + getColor() + "JackHammer";
     }
 
     @Override
@@ -87,13 +78,14 @@ public class JackHammer extends EnchantBase {
         return getBasePrice() * amount;
     }
 
+    /*
+        Doesn't affect Player blocks mined as we intend for those blocks
+        to be raw.
+     */
     @Override
     public void handle(PrisonPlayer prisonPlayer, PlayerPickaxe playerPickaxe, PersonalMine personalMine, BlockBreakEvent e) {
-        CuboidRegion region = personalMine.getMineRegion().toCuboidRegion().clone();
-        region.getCenter().setComponents(region.getCenter().getX(), e.getBlock().getY(), region.getCenter().getZ());
-
-        EditSession editSession = Fawe.instance().getWorldEdit().newEditSession(FaweAPI.getWorld("mines"));
-        editSession.setBlocks(new CuboidRegionFactory().createCenteredAt(region.getCenter().toBlockPoint(), 10), BlockTypes.AIR);
-        editSession.flushQueue();
+        long blockAffected = FaweUtils.getJackHammer(personalMine, e.getBlock().getLocation());
+        personalMine.addBlocksMined(blockAffected);
+        playerPickaxe.addBlocksMined(blockAffected);
     }
 }

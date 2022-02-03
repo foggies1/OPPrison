@@ -3,6 +3,9 @@ package net.prison.foggies.core.player.commands;
 import net.prison.foggies.core.OPPrison;
 import net.prison.foggies.core.player.commands.level.*;
 import net.prison.foggies.core.player.commands.prestige.*;
+import net.prison.foggies.core.player.commands.tokens.TokenAddCMD;
+import net.prison.foggies.core.player.commands.tokens.TokenSetCMD;
+import net.prison.foggies.core.player.commands.tokens.TokenTakeCMD;
 
 public class PlayerCommandHandler {
 
@@ -22,5 +25,8 @@ public class PlayerCommandHandler {
         new TakeLevelCMD(plugin);
 
         new PlayerDataCMD(plugin);
+        new TokenAddCMD(plugin);
+        new TokenSetCMD(plugin);
+        new TokenTakeCMD(plugin);
     }
 }

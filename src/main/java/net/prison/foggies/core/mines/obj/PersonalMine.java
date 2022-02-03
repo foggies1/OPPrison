@@ -1,14 +1,15 @@
 package net.prison.foggies.core.mines.obj;
 
-import com.fastasyncworldedit.core.Fawe;
-import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BlockType;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import me.lucko.helper.Schedulers;
 import me.lucko.helper.utils.Players;
 import org.bukkit.entity.Player;
 
@@ -41,15 +42,26 @@ public class PersonalMine {
     }
 
     public void empty(){
-        EditSession editSession = Fawe.get().getWorldEdit().newEditSession(FaweAPI.getWorld(mineRegion.getPoint1().getWorld().getName()));
-        editSession.setBlocks((Region) mineRegion.toEntireCuboidRegion(), BlockTypes.AIR);
-        editSession.flushQueue();
+        final World world = mineRegion.toCuboidRegion().getWorld();
+
+        Schedulers.async().run(() -> {
+            try(EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
+                editSession.setBlocks((Region) mineRegion.toEntireCuboidRegion(), BlockTypes.AIR);
+                editSession.flushQueue();
+            }
+        });
+
     }
 
     public void reset(){
-        EditSession editSession = Fawe.get().getWorldEdit().newEditSession(FaweAPI.getWorld(mineRegion.getPoint1().getWorld().getName()));
-        editSession.setBlocks((Region) mineRegion.toCuboidRegion(), BlockType.REGISTRY.get(mineBlock.getMaterial().toLowerCase()));
-        editSession.flushQueue();
+        final World world = mineRegion.toCuboidRegion().getWorld();
+
+        Schedulers.async().run(() -> {
+            try(EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
+                editSession.setBlocks((Region) mineRegion.toCuboidRegion(), BlockType.REGISTRY.get(mineBlock.getMaterial().toLowerCase()));
+                editSession.flushQueue();
+            }
+        });
 
         getPlayersInMine().forEach(player -> player.teleport(mineRegion.getSpawnPoint().toBukkitLocation()));
     }
