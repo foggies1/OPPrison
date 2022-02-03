@@ -87,7 +87,13 @@ public class PlayerStorage {
     }
 
     public void save(UUID uuid, boolean removeFromCache) {
-        get(uuid).ifPresent(playerDatabase::save);
+        get(uuid).ifPresent(player -> {
+            try {
+                playerDatabase.save(player);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
         if (removeFromCache)
             prisonPlayerMap.remove(uuid);
 

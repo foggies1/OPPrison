@@ -3,6 +3,7 @@ package net.prison.foggies.core.pickaxe.enchants;
 import net.prison.foggies.core.mines.obj.PersonalMine;
 import net.prison.foggies.core.pickaxe.api.EnchantBase;
 import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
+import net.prison.foggies.core.player.obj.BackPack;
 import net.prison.foggies.core.player.obj.PrisonPlayer;
 import net.prison.foggies.core.utils.FaweUtils;
 import net.prison.foggies.core.utils.Lang;
@@ -84,8 +85,10 @@ public class JackHammer extends EnchantBase {
      */
     @Override
     public void handle(PrisonPlayer prisonPlayer, PlayerPickaxe playerPickaxe, PersonalMine personalMine, BlockBreakEvent e) {
+        BackPack backPack = prisonPlayer.getBackPack();
         long blockAffected = FaweUtils.getJackHammer(personalMine, e.getBlock().getLocation());
         personalMine.addBlocksMined(blockAffected);
         playerPickaxe.addBlocksMined(blockAffected);
+        backPack.addBlock(personalMine.getMineBlock(), blockAffected);
     }
 }

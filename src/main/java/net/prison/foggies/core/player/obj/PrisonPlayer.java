@@ -8,12 +8,15 @@ import me.lucko.helper.text3.event.HoverEvent;
 import net.milkbowl.vault.economy.Economy;
 import net.prison.foggies.core.utils.Lang;
 import net.prison.foggies.core.utils.Number;
+import net.prison.foggies.core.utils.SerializeUtils;
 import net.prison.foggies.core.utils.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.UUID;
 
 @Getter
@@ -34,6 +37,7 @@ public class PrisonPlayer {
     private long totalTokensSpent;
     private long totalTokensGained;
     private long blocksMined;
+    private BackPack backPack;
 
     /**
      * Used for loading a player from database.
@@ -42,7 +46,7 @@ public class PrisonPlayer {
      * @param resultSet the set of results gotten from database query.
      * @throws SQLException exception.
      */
-    public PrisonPlayer(UUID uuid, ResultSet resultSet) throws SQLException {
+    public PrisonPlayer(UUID uuid, ResultSet resultSet) throws SQLException, IOException, ClassNotFoundException {
         this.UUID = uuid;
         this.level = resultSet.getLong("LEVEL");
         this.prestige = resultSet.getLong("PRESTIGE");
@@ -52,6 +56,7 @@ public class PrisonPlayer {
         this.totalTokensSpent = resultSet.getLong("TOTAL_TOKENS_SPENT");
         this.totalTokensGained = resultSet.getLong("TOTAL_TOKENS_GAINED");
         this.blocksMined = resultSet.getLong("BLOCKS_MINED");
+        this.backPack = (BackPack) SerializeUtils.fromString(resultSet.getString("BACKPACK"));
     }
 
     /**
@@ -69,6 +74,7 @@ public class PrisonPlayer {
         this.totalTokensSpent = 0L;
         this.totalTokensGained = 0L;
         this.blocksMined = 0L;
+        this.backPack = new BackPack(new HashMap<>(), 0L, 1L, 1000000000L);
     }
 
     public double getLevelUpCost() {

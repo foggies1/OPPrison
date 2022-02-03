@@ -2,6 +2,7 @@ package net.prison.foggies.core.player.database;
 
 import net.prison.foggies.core.player.obj.PrisonPlayer;
 import net.prison.foggies.core.utils.Database;
+import net.prison.foggies.core.utils.SerializeUtils;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -31,6 +32,7 @@ public class PlayerDatabase extends Database {
                 "TOTAL_TOKENS_SPENT BIGINT," +
                 "TOTAL_TOKENS_GAINED BIGINT," +
                 "BLOCKS_MINED BIGINT, " +
+                "BACKPACK TEXT, " +
                 "PRIMARY KEY (UUID)" +
                 ")");
     }
@@ -47,21 +49,21 @@ public class PlayerDatabase extends Database {
                         new PrisonPlayer(uuid, resultSet)
                 );
 
-        } catch (SQLException e) {
+        } catch (SQLException | IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return Optional.empty();
     }
 
     public void insert(PrisonPlayer prisonPlayer) throws IOException {
-        executeQuery("INSERT IGNORE INTO PlayerData VALUES(?,?,?,?,?,?,?,?,?)",
+        executeQuery("INSERT IGNORE INTO PlayerData VALUES(?,?,?,?,?,?,?,?,?,?)",
                 prisonPlayer.getUUID().toString(), prisonPlayer.getLevel(), prisonPlayer.getPrestige(),
                 prisonPlayer.getLevelExperience(), prisonPlayer.isAutoPrestige(),
                 prisonPlayer.getTokens(), prisonPlayer.getTotalTokensSpent(), prisonPlayer.getTotalTokensGained(),
-                prisonPlayer.getBlocksMined());
+                prisonPlayer.getBlocksMined(), SerializeUtils.toString(prisonPlayer.getBackPack()));
     }
 
-    public void save(PrisonPlayer prisonPlayer) {
+    public void save(PrisonPlayer prisonPlayer) throws IOException {
         executeQuery("UPDATE PlayerData SET LEVEL=?," +
                         "PRESTIGE=?," +
                         "LEVEL_EXPERIENCE=?," +
@@ -69,11 +71,13 @@ public class PlayerDatabase extends Database {
                         "TOKENS=?," +
                         "TOTAL_TOKENS_SPENT=?," +
                         "TOTAL_TOKENS_GAINED=?," +
-                        "BLOCKS_MINED=? WHERE UUID=?",
+                        "BLOCKS_MINED=?," +
+                        "BACKPACK=? WHERE UUID=?",
                 prisonPlayer.getLevel(), prisonPlayer.getPrestige(), prisonPlayer.getLevelExperience(),
                 prisonPlayer.isAutoPrestige(), prisonPlayer.getTokens(),
                 prisonPlayer.getTotalTokensSpent(), prisonPlayer.getTotalTokensGained(),
                 prisonPlayer.getBlocksMined(),
+                SerializeUtils.toString(prisonPlayer.getBackPack()),
                 prisonPlayer.getUUID().toString());
     }
 

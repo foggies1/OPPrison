@@ -28,5 +28,7 @@ public class PlayerCommandHandler {
         new TokenAddCMD(plugin);
         new TokenSetCMD(plugin);
         new TokenTakeCMD(plugin);
+
+        new BackPackCMD(plugin);
     }
 }
