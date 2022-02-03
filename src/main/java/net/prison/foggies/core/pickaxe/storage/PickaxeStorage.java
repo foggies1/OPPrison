@@ -50,25 +50,18 @@ public class PickaxeStorage {
     public void loadPickaxe(UUID uuid) throws IOException, SQLException {
         if (pickaxeMap.containsKey(uuid)) return;
         final Player player = Bukkit.getPlayer(uuid);
+        Optional<PlayerPickaxe> pickaxe = pickaxeDatabase.getPickaxe(uuid);
 
-        pickaxeDatabase.getPickaxe(uuid)
-                .whenComplete((pickaxe, throwable) -> {
-                    if(throwable != null){
-                        throwable.printStackTrace();
-                        return;
-                    }
+        if (pickaxe.isEmpty()) {
+            PlayerPickaxe playerPickaxe = new PlayerPickaxe(enchantHandler, uuid);
+            pickaxeDatabase.insertPickaxe(playerPickaxe);
+            pickaxeMap.put(uuid, playerPickaxe);
+            return;
+        }
 
-                    pickaxe.ifPresentOrElse(pick -> {
-                        pickaxeMap.put(uuid, pick);
-                        assert player != null;
-                        updatePickaxe(player);
-                    }, () -> {
-                        PlayerPickaxe playerPickaxe = new PlayerPickaxe(enchantHandler, uuid);
-                        pickaxeDatabase.insertPickaxe(playerPickaxe);
-                        pickaxeMap.put(uuid, playerPickaxe);
-                    });
-
-                });
+        pickaxeMap.put(uuid, pickaxe.get());
+        assert player != null;
+        updatePickaxe(player);
     }
 
     public void unloadPickaxe(UUID uuid) {

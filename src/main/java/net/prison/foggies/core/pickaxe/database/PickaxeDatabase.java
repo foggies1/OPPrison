@@ -1,7 +1,7 @@
 package net.prison.foggies.core.pickaxe.database;
 
-import net.prison.foggies.core.pickaxe.api.EnchantBase;
 import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
+import net.prison.foggies.core.pickaxe.api.EnchantBase;
 import net.prison.foggies.core.utils.Database;
 import net.prison.foggies.core.utils.SerializeUtils;
 
@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public class PickaxeDatabase extends Database {
 
@@ -40,35 +39,29 @@ public class PickaxeDatabase extends Database {
                 ")");
     }
 
-
-    public CompletableFuture<Optional<PlayerPickaxe>> getPickaxe(UUID uuid) throws SQLException {
+    public Optional<PlayerPickaxe> getPickaxe(UUID uuid) {
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement("SELECT * FROM " + TABLE_NAME + " WHERE UUID=?")) {
 
             ps.setString(1, uuid.toString());
             ResultSet resultSet = ps.executeQuery();
             if(resultSet.next())
-                return CompletableFuture.supplyAsync(() -> {
-                    try {
-                        return Optional.of(
-                                 new PlayerPickaxe(
-                                         uuid,
-                                         resultSet.getString("NAME"),
-                                         resultSet.getLong("RAW_BLOCKS"),
-                                         resultSet.getLong("BLOCKS"),
-                                         resultSet.getLong("TOKENS_SPENT"),
-                                         resultSet.getLong("LEVEL"),
-                                         resultSet.getDouble("EXPERIENCE"),
-                                         (HashMap<EnchantBase, Long>) SerializeUtils.fromString(resultSet.getString("ENCHANTMENTS"))
-                                 )
-                         );
-                    } catch (SQLException | IOException | ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    return Optional.empty();
-                });
+                return Optional.of(
+                        new PlayerPickaxe(
+                                uuid,
+                                resultSet.getString("NAME"),
+                                resultSet.getLong("RAW_BLOCKS"),
+                                resultSet.getLong("BLOCKS"),
+                                resultSet.getLong("TOKENS_SPENT"),
+                                resultSet.getLong("LEVEL"),
+                                resultSet.getDouble("EXPERIENCE"),
+                                (HashMap<EnchantBase, Long>) SerializeUtils.fromString(resultSet.getString("ENCHANTMENTS"))
+                        )
+                );
+        } catch (SQLException | IOException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
-        return CompletableFuture.supplyAsync(Optional::empty);
+        return Optional.empty();
     }
 
     public void savePickaxe(PlayerPickaxe pickaxe) throws IOException {
@@ -89,20 +82,16 @@ public class PickaxeDatabase extends Database {
                 SerializeUtils.toString(pickaxe.getEnchantments()), pickaxe.getUuid().toString());
     }
 
-    public void insertPickaxe(PlayerPickaxe pickaxe) {
-        try {
-            executeQuery("INSERT IGNORE INTO " + TABLE_NAME + " VALUES(?,?,?,?,?,?,?,?)",
-                    pickaxe.getUuid().toString(),
-                    pickaxe.getName(),
-                    pickaxe.getRawBlocksMined(),
-                    pickaxe.getBlocksMined(),
-                    pickaxe.getTokensSpent(),
-                    pickaxe.getLevel(),
-                    pickaxe.getExperience(),
-                    SerializeUtils.toString(pickaxe.getEnchantments()));
-        } catch (IOException e){
-            e.printStackTrace();
-        }
+    public void insertPickaxe(PlayerPickaxe pickaxe) throws IOException {
+        executeQuery("INSERT IGNORE INTO " + TABLE_NAME + " VALUES(?,?,?,?,?,?,?,?)",
+                pickaxe.getUuid().toString(),
+                pickaxe.getName(),
+                pickaxe.getRawBlocksMined(),
+                pickaxe.getBlocksMined(),
+                pickaxe.getTokensSpent(),
+                pickaxe.getLevel(),
+                pickaxe.getExperience(),
+                SerializeUtils.toString(pickaxe.getEnchantments()));
     }
 
 

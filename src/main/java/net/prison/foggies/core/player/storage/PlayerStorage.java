@@ -8,6 +8,7 @@ import net.prison.foggies.core.player.database.PlayerDatabase;
 import net.prison.foggies.core.player.obj.PrisonPlayer;
 import org.bukkit.Bukkit;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -55,27 +56,28 @@ public class PlayerStorage {
     public void load(UUID uuid) {
         final String name = Bukkit.getOfflinePlayer(uuid).getName();
 
-        playerDatabase.get(uuid)
-                .whenComplete((prisonPlayer, throwable) -> {
-                    if (throwable != null) {
-                        throwable.printStackTrace();
-                        ;
-                        return;
-                    }
+        if (!playerDatabase.contains(uuid)) {
+            try {
+                PrisonPlayer prisonPlayer = new PrisonPlayer(uuid);
 
-                    prisonPlayer.ifPresentOrElse(player -> {
-                        prisonPlayerMap.put(uuid, player);
-                        log.log(Level.INFO, "Successfully loaded " + name + " from database and cached.");
-                    }, () -> {
-                        PrisonPlayer pp = new PrisonPlayer(uuid);
+                playerDatabase.insert(prisonPlayer);
+                prisonPlayerMap.put(uuid, prisonPlayer);
 
-                        playerDatabase.insert(pp);
-                        prisonPlayerMap.put(uuid, pp);
+                log.log(Level.INFO, "Inserted " + name + " into database, and cached.");
+            } catch (IOException e) {
+                log.log(Level.WARNING, "Something when wrong when inserting " + name + " into database.");
+            }
+            return;
+        }
 
-                        log.log(Level.INFO, "Inserted " + name + " into database, and cached.");
-                    });
+        Optional<PrisonPlayer> prisonPlayer = playerDatabase.get(uuid);
+        if (prisonPlayer.isEmpty()) {
+            log.log(Level.INFO, "Failed to load " + name + " from database.");
+            return;
+        }
 
-                });
+        prisonPlayerMap.put(uuid, prisonPlayer.get());
+        log.log(Level.INFO, "Successfully loaded " + name + " from database and cached.");
     }
 
     public void unload(UUID uuid) {

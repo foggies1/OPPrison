@@ -3,13 +3,13 @@ package net.prison.foggies.core.player.database;
 import net.prison.foggies.core.player.obj.PrisonPlayer;
 import net.prison.foggies.core.utils.Database;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public class PlayerDatabase extends Database {
 
@@ -35,7 +35,7 @@ public class PlayerDatabase extends Database {
                 ")");
     }
 
-    public CompletableFuture<Optional<PrisonPlayer>> get(UUID uuid) {
+    public Optional<PrisonPlayer> get(UUID uuid) {
         try (Connection con = getConnection();
              PreparedStatement ps = con.prepareStatement("SELECT * FROM PlayerData WHERE UUID=?")) {
 
@@ -43,24 +43,17 @@ public class PlayerDatabase extends Database {
             ResultSet resultSet = ps.executeQuery();
 
             if (resultSet.next())
-                return CompletableFuture.supplyAsync(() -> {
-                    try {
-                        return Optional.of(
-                                new PrisonPlayer(uuid, resultSet)
-                        );
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
-                    return Optional.empty();
-                });
+                return Optional.of(
+                        new PrisonPlayer(uuid, resultSet)
+                );
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return CompletableFuture.supplyAsync(Optional::empty);
+        return Optional.empty();
     }
-    public void insert(PrisonPlayer prisonPlayer) {
+
+    public void insert(PrisonPlayer prisonPlayer) throws IOException {
         executeQuery("INSERT IGNORE INTO PlayerData VALUES(?,?,?,?,?,?,?,?,?)",
                 prisonPlayer.getUUID().toString(), prisonPlayer.getLevel(), prisonPlayer.getPrestige(),
                 prisonPlayer.getLevelExperience(), prisonPlayer.isAutoPrestige(),
