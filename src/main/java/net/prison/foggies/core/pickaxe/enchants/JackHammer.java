@@ -68,12 +68,12 @@ public class JackHammer extends EnchantBase {
 
     @Override
     public float getChance() {
-        return 0.1F;
+        return 0.05F;
     }
 
     @Override
     public double getBasePrice() {
-        return 1000000;
+        return 150000000;
     }
 
     @Override

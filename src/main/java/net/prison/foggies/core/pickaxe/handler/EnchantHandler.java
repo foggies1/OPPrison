@@ -4,10 +4,8 @@ import lombok.Getter;
 import net.prison.foggies.core.OPPrison;
 import net.prison.foggies.core.pickaxe.api.EnchantBase;
 import net.prison.foggies.core.pickaxe.enchants.JackHammer;
-import net.prison.foggies.core.pickaxe.enchants.KeyFinder;
-import net.prison.foggies.core.pickaxe.enchants.MoneyFinder;
+import net.prison.foggies.core.pickaxe.enchants.Producer;
 import net.prison.foggies.core.pickaxe.enchants.TokenFinder;
-import org.bukkit.event.block.BlockBreakEvent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,8 +39,7 @@ public class EnchantHandler {
     private List<EnchantBase> getEnchants(){
         return Arrays.asList(
                 new TokenFinder(),
-                new KeyFinder(),
-                new MoneyFinder(),
+                new Producer(),
                 new JackHammer()
         );
     }

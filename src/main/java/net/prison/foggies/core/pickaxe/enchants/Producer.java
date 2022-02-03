@@ -5,18 +5,17 @@ import net.prison.foggies.core.pickaxe.api.EnchantBase;
 import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
 import net.prison.foggies.core.player.obj.PrisonPlayer;
 import net.prison.foggies.core.utils.Lang;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MoneyFinder extends EnchantBase {
+public class Producer extends EnchantBase {
 
     @Override
     public String getColor() {
-        return "&a";
+        return "&e";
     }
 
     @Override
@@ -26,36 +25,37 @@ public class MoneyFinder extends EnchantBase {
 
     @Override
     public String getDisplayName() {
-        return getColor() + "&l" + getSymbol() + getColor() + "MoneyFinder";
+        return getColor() + "&l" + getSymbol() + getColor() + "Producer";
     }
 
     @Override
     public String getMenuDisplayName() {
-        return getColor() + "&lMoneyFinder";
+        return getColor() + "&lProducer";
     }
 
     @Override
     public String getIdentifier() {
-        return "MONEY_FINDER";
+        return "PRODUCER";
     }
 
     @Override
     public long getStartLevel() {
-        return 10;
+        return 5;
     }
 
     @Override
     public List<String> getDescription() {
         return new ArrayList<>(
                 Arrays.asList(
-                        "&7Find more money while mining."
+                        "&7Get more tokens each time Token Finder",
+                        "&7is activated."
                 )
         );
     }
 
     @Override
     public long getMaxLevel() {
-        return 10000;
+        return 1000000;
     }
 
     @Override
@@ -65,12 +65,12 @@ public class MoneyFinder extends EnchantBase {
 
     @Override
     public float getChance() {
-        return 1.0F;
+        return 0.005F;
     }
 
     @Override
     public double getBasePrice() {
-        return 25000000;
+        return 10000000;
     }
 
     @Override
@@ -80,7 +80,6 @@ public class MoneyFinder extends EnchantBase {
 
     @Override
     public void handle(PrisonPlayer prisonPlayer, PlayerPickaxe playerPickaxe, PersonalMine personalMine, BlockBreakEvent e) {
-        Player player = e.getPlayer();
 
     }
 }

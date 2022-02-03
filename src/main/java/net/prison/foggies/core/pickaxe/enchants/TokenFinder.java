@@ -1,16 +1,20 @@
 package net.prison.foggies.core.pickaxe.enchants;
 
+import me.lucko.helper.utils.Players;
 import net.prison.foggies.core.mines.obj.PersonalMine;
 import net.prison.foggies.core.pickaxe.api.EnchantBase;
 import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
 import net.prison.foggies.core.player.obj.PrisonPlayer;
 import net.prison.foggies.core.utils.Lang;
+import net.prison.foggies.core.utils.Math;
+import net.prison.foggies.core.utils.Number;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class TokenFinder extends EnchantBase {
 
@@ -48,14 +52,15 @@ public class TokenFinder extends EnchantBase {
     public List<String> getDescription() {
         return new ArrayList<>(
                 Arrays.asList(
-                        "&7Find more tokens while mining."
+                        "&7Chance to find huge bursts of tokens",
+                        "&7while mining."
                 )
         );
     }
 
     @Override
     public long getMaxLevel() {
-        return 10000;
+        return 500;
     }
 
     @Override
@@ -65,12 +70,12 @@ public class TokenFinder extends EnchantBase {
 
     @Override
     public float getChance() {
-        return 1.0F;
+        return 0.5F;
     }
 
     @Override
     public double getBasePrice() {
-        return 250000000;
+        return 500000000;
     }
 
     @Override
@@ -81,6 +86,16 @@ public class TokenFinder extends EnchantBase {
     @Override
     public void handle(PrisonPlayer prisonPlayer, PlayerPickaxe playerPickaxe, PersonalMine personalMine, BlockBreakEvent e) {
         Player player = e.getPlayer();
+        long level = playerPickaxe.getLevel(getIdentifier());
+        long producerLevel = playerPickaxe.getLevel("PRODUCER");
+        if(producerLevel <= 0) producerLevel = 1;
 
+        if (!Math.isRandom(getChance() * level, getMaxLevel())) return;
+
+        long baseTokens = producerLevel * 10000L;
+        long tokens = ThreadLocalRandom.current().nextLong(10000L, baseTokens);
+
+        Players.msg(player, "&b&lLUCKY!!! &7You received " + Number.pretty(tokens) + " Tokens.");
+        prisonPlayer.addTokens(tokens, false);
     }
 }

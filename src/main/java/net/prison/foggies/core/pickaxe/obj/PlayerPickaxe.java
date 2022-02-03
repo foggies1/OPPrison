@@ -63,7 +63,7 @@ public class PlayerPickaxe {
         this.name = "&3&lStarter Pickaxe";
     }
 
-    public ItemStack toItemStack(){
+    public ItemStack toItemStack() {
 
         final String symbol = "&3&l" + Lang.BLOCK_SYMBOL.getMessage();
 
@@ -75,37 +75,40 @@ public class PlayerPickaxe {
 
         List<String> lore = new ArrayList<>();
         enchantments.forEach((enchant, level) -> {
-            if(level > 0)
-                lore.add(enchant.getDisplayName()  + " " + Number.pretty(level));
+            if (level > 0)
+                lore.add(enchant.getDisplayName() + " " + Number.pretty(level));
         });
 
-        lore.add(symbol + "&bBlocks Mined &8(&7&oRaw&8)&a: " + Number.pretty(this.rawBlocksMined));
-        lore.add(symbol + "&bBlocks Mined: " + Number.pretty(this.blocksMined));
-        lore.add(symbol + "&bTotal Tokens Spent: " + Number.pretty(this.tokensSpent));
-        lore.add(symbol + "&bLevel: " + Number.pretty(this.level));
+        lore.add("");
+        lore.add("&7┍━");
+        lore.add("&7⏐ &bBlocks Mined &8(&3&oRaw&8)&f: " + Number.pretty(this.rawBlocksMined));
+        lore.add("&7⏐ &bBlocks Mined&f: " + Number.pretty(this.blocksMined));
+        lore.add("&7⏐ &bTotal Tokens Spent&f: " + Number.pretty(this.tokensSpent));
+        lore.add("&7⏐ &bLevel&f: " + Number.pretty(this.level));
+        lore.add("&7┕━");
 
         return itemStackBuilder.lore(lore).build();
     }
 
-    public void addTokensSpent(long amount){
+    public void addTokensSpent(long amount) {
         setTokensSpent(getTokensSpent() + amount);
     }
 
-    public void addBlocksMined(long amount){
+    public void addBlocksMined(long amount) {
         setBlocksMined(getBlocksMined() + amount);
     }
 
-    public void addRawBlocksMined(long amount){
+    public void addRawBlocksMined(long amount) {
         setRawBlocksMined(getRawBlocksMined() + amount);
     }
 
     public void addLevel(EnchantHandler enchantHandler, String identifier, long amount) {
         Optional<EnchantBase> enchantBase = enchantHandler.getEnchant(identifier);
         long currentLevel = getLevel(identifier);
-        if(currentLevel == -1L || enchantBase.isEmpty()) return;
+        if (currentLevel == -1L || enchantBase.isEmpty()) return;
 
         long maxLevel = enchantBase.get().getMaxLevel();
-        if(currentLevel + amount > maxLevel) amount = maxLevel - currentLevel;
+        if (currentLevel + amount > maxLevel) amount = maxLevel - currentLevel;
 
         setLevel(enchantHandler, identifier, currentLevel + amount);
         notifyUpgrade(enchantBase.get(), amount);
@@ -138,11 +141,11 @@ public class PlayerPickaxe {
         return enchantments.keySet().stream().filter(enchant -> enchant.getIdentifier().equalsIgnoreCase(identifier)).findFirst();
     }
 
-    private void notifyUpgrade(EnchantBase enchant, long amount){
+    private void notifyUpgrade(EnchantBase enchant, long amount) {
         Players.msg(toBukkit(), "&7You've upgraded " + enchant.getDisplayName() + " by &7x" + Number.pretty(amount) + ".");
     }
 
-    private Player toBukkit(){
+    private Player toBukkit() {
         return Bukkit.getPlayer(uuid);
     }
 
