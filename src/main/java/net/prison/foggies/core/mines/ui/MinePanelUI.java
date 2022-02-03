@@ -95,7 +95,7 @@ public class MinePanelUI extends Gui {
                                 return;
                             }
 
-                            // OPEN MENU
+                            new MineFriendsUI(getPlayer(), plugin, personalMine.get()).open();
 
                         })
         );

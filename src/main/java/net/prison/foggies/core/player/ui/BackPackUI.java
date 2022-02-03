@@ -16,7 +16,7 @@ public class BackPackUI extends PaginatedGui {
     public BackPackUI(Player player, List<Item> items) {
         super(paginatedGui -> items, player,
                 PaginatedGuiBuilder.create()
-                        .title("&aGenerator Storage")
+                        .title("&aBackPack Storage")
                         .nextPageItem(pageInfo ->
                                 ItemStackBuilder
                                         .of(Material.STONE_BUTTON)
