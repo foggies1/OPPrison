@@ -4,7 +4,9 @@ import me.lucko.helper.utils.Players;
 import net.prison.foggies.core.mines.obj.PersonalMine;
 import net.prison.foggies.core.pickaxe.model.EnchantBase;
 import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
+import net.prison.foggies.core.player.constant.SettingType;
 import net.prison.foggies.core.player.obj.PrisonPlayer;
+import net.prison.foggies.core.player.obj.Setting;
 import net.prison.foggies.core.utils.Lang;
 import net.prison.foggies.core.utils.Math;
 import net.prison.foggies.core.utils.Number;
@@ -14,6 +16,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class TokenFinder extends EnchantBase {
@@ -45,7 +48,7 @@ public class TokenFinder extends EnchantBase {
 
     @Override
     public long getStartLevel() {
-        return 10;
+        return 100;
     }
 
     @Override
@@ -86,16 +89,20 @@ public class TokenFinder extends EnchantBase {
     @Override
     public void handle(PrisonPlayer prisonPlayer, PlayerPickaxe playerPickaxe, PersonalMine personalMine, BlockBreakEvent e) {
         Player player = e.getPlayer();
+        final Optional<Setting> tokenMinerSetting = prisonPlayer.getSetting(SettingType.TOKEN_MINER);
+
         long level = playerPickaxe.getLevel(getIdentifier());
         long producerLevel = playerPickaxe.getLevel("PRODUCER");
-        if(producerLevel <= 0) producerLevel = 1;
+        if (producerLevel <= 0) producerLevel = 1;
 
         if (!Math.isRandom(getChance() * level, getMaxLevel())) return;
 
         long baseTokens = producerLevel * 10000L;
         long tokens = ThreadLocalRandom.current().nextLong(10000L, baseTokens);
 
-        Players.msg(player, "&b&lLUCKY!!! &7You received " + Number.pretty(tokens) + " Tokens.");
         prisonPlayer.addTokens(tokens, false);
+
+        if (tokenMinerSetting.isPresent() && tokenMinerSetting.get().isToggled())
+            Players.msg(player, "&b&lLUCKY!!! &7You received " + Number.pretty(tokens) + " Tokens.");
     }
 }

@@ -31,6 +31,7 @@ public class PlayerDatabase extends Database {
                 "TOTAL_TOKENS_GAINED BIGINT," +
                 "BLOCKS_MINED BIGINT, " +
                 "BACKPACK TEXT, " +
+                "SETTINGS TEXT, " +
                 "PRIMARY KEY (UUID)" +
                 ")");
     }
@@ -54,11 +55,12 @@ public class PlayerDatabase extends Database {
     }
 
     public void insert(PrisonPlayer prisonPlayer) throws IOException {
-        executeQuery("INSERT IGNORE INTO PlayerData VALUES(?,?,?,?,?,?,?,?)",
+        executeQuery("INSERT IGNORE INTO PlayerData VALUES(?,?,?,?,?,?,?,?,?)",
                 prisonPlayer.getUUID().toString(), prisonPlayer.getPrestige(),
                  prisonPlayer.isAutoPrestige(),
                 prisonPlayer.getTokens(), prisonPlayer.getTotalTokensSpent(), prisonPlayer.getTotalTokensGained(),
-                prisonPlayer.getBlocksMined(), SerializeUtils.toString(prisonPlayer.getBackPack()));
+                prisonPlayer.getBlocksMined(), SerializeUtils.toString(prisonPlayer.getBackPack()),
+                SerializeUtils.toString(prisonPlayer.getSettings()));
     }
 
     public void save(PrisonPlayer prisonPlayer) throws IOException {
@@ -69,12 +71,14 @@ public class PlayerDatabase extends Database {
                         "TOTAL_TOKENS_SPENT=?," +
                         "TOTAL_TOKENS_GAINED=?," +
                         "BLOCKS_MINED=?," +
-                        "BACKPACK=? WHERE UUID=?",
+                        "BACKPACK=?," +
+                        "SETTINGS=? WHERE UUID=?",
                 prisonPlayer.getPrestige(),
                 prisonPlayer.isAutoPrestige(), prisonPlayer.getTokens(),
                 prisonPlayer.getTotalTokensSpent(), prisonPlayer.getTotalTokensGained(),
                 prisonPlayer.getBlocksMined(),
                 SerializeUtils.toString(prisonPlayer.getBackPack()),
+                SerializeUtils.toString(prisonPlayer.getSettings()),
                 prisonPlayer.getUUID().toString());
     }
 

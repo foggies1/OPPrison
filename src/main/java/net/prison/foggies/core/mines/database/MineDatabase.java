@@ -35,6 +35,8 @@ public class MineDatabase extends Database {
                 "COMPOSITION TEXT, " +
                 "REGION TEXT, " +
                 "FRIENDS TEXT, " +
+                "LUCKY_CHANCE FLOAT, " +
+                "FRENZY_TOKENS INT, " +
                 "IS_PUBLIC BOOLEAN, " +
                 "PRIMARY KEY (UUID)" +
                 ")");
@@ -65,6 +67,8 @@ public class MineDatabase extends Database {
                                 (MineBlock) SerializeUtils.fromString(resultSet.getString("COMPOSITION")),
                                 (MineRegion) SerializeUtils.fromString(resultSet.getString("REGION")),
                                 (ArrayList<UUID>) SerializeUtils.fromString(resultSet.getString("FRIENDS")),
+                                resultSet.getFloat("LUCKY_CHANCE"),
+                                resultSet.getInt("FRENZY_TOKENS"),
                                 resultSet.getBoolean("IS_PUBLIC")
                         )
                 );
@@ -81,11 +85,13 @@ public class MineDatabase extends Database {
         try {
             executeQuery("UPDATE Mines SET " +
                             "BLOCKS_MINED=?,LEVEL=?," +
-                            "EXPERIENCE=?,COMPOSITION=?,REGION=?,FRIENDS=?,IS_PUBLIC=? WHERE UUID=?",
+                            "EXPERIENCE=?,COMPOSITION=?,REGION=?,FRIENDS=?,LUCKY_CHANCE=?,FRENZY_TOKENS=?,IS_PUBLIC=? WHERE UUID=?",
                     pMine.getBlocksMined(), pMine.getMineLevel(),
                     pMine.getMineExperience(), SerializeUtils.toString(pMine.getMineBlock()),
                     SerializeUtils.toString(pMine.getMineRegion()),
                     SerializeUtils.toString(pMine.getFriends()),
+                    pMine.getLuckyBlockChance(),
+                    pMine.getFrenzyTokens(),
                     pMine.isPublic(), pMine.getMineOwner().toString()
             );
         } catch (IOException e) {
@@ -95,11 +101,13 @@ public class MineDatabase extends Database {
 
     public void insertMine(PersonalMine pMine) {
         try {
-            executeQuery("INSERT IGNORE INTO Mines VALUES(?,?,?,?,?,?,?,?)",
+            executeQuery("INSERT IGNORE INTO Mines VALUES(?,?,?,?,?,?,?,?,?,?)",
                     pMine.getMineOwner().toString(), pMine.getBlocksMined(), pMine.getMineLevel(),
                     pMine.getMineExperience(), SerializeUtils.toString(pMine.getMineBlock()),
                     SerializeUtils.toString(pMine.getMineRegion()),
                     SerializeUtils.toString(pMine.getFriends()),
+                    pMine.getLuckyBlockChance(),
+                    pMine.getFrenzyTokens(),
                     pMine.isPublic()
             );
         } catch (IOException e) {

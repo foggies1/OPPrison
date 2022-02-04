@@ -1,7 +1,6 @@
 package net.prison.foggies.core;
 
 import lombok.Getter;
-import me.lucko.helper.plugin.ExtendedJavaPlugin;
 import net.milkbowl.vault.economy.Economy;
 import net.prison.foggies.core.events.BlockBreakListener;
 import net.prison.foggies.core.events.PlayerJoinQuitListener;
@@ -9,7 +8,7 @@ import net.prison.foggies.core.mines.storage.MineBlockStorage;
 import net.prison.foggies.core.mines.database.MineDatabase;
 import net.prison.foggies.core.mines.handler.MineQueueHandler;
 import net.prison.foggies.core.mines.storage.MineStorage;
-import net.prison.foggies.core.mines.commands.MineCommandHandler;
+import net.prison.foggies.core.mines.handler.MineCommandHandler;
 import net.prison.foggies.core.pickaxe.database.PickaxeDatabase;
 import net.prison.foggies.core.pickaxe.events.PickaxeInteractListener;
 import net.prison.foggies.core.pickaxe.handler.EnchantHandler;

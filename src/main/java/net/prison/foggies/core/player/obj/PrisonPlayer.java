@@ -5,6 +5,7 @@ import lombok.Setter;
 import me.lucko.helper.Schedulers;
 import me.lucko.helper.utils.Players;
 import net.milkbowl.vault.economy.Economy;
+import net.prison.foggies.core.player.constant.SettingType;
 import net.prison.foggies.core.utils.Lang;
 import net.prison.foggies.core.utils.Number;
 import net.prison.foggies.core.utils.SerializeUtils;
@@ -14,8 +15,7 @@ import org.bukkit.entity.Player;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
@@ -32,6 +32,7 @@ public class PrisonPlayer {
     private long totalTokensGained;
     private long blocksMined;
     private BackPack backPack;
+    private ArrayList<Setting> settings;
 
     /**
      * Used for loading a player from database.
@@ -49,6 +50,7 @@ public class PrisonPlayer {
         this.totalTokensGained = resultSet.getLong("TOTAL_TOKENS_GAINED");
         this.blocksMined = resultSet.getLong("BLOCKS_MINED");
         this.backPack = (BackPack) SerializeUtils.fromString(resultSet.getString("BACKPACK"));
+        this.settings = (ArrayList<Setting>) SerializeUtils.fromString(resultSet.getString("SETTINGS"));
     }
 
     /**
@@ -65,6 +67,30 @@ public class PrisonPlayer {
         this.totalTokensGained = 0L;
         this.blocksMined = 0L;
         this.backPack = new BackPack(new HashMap<>(), 0L, 1L, 1000000000L);
+
+        ArrayList<Setting> settingList = new ArrayList<>();
+        Arrays.stream(SettingType.values()).forEach(setting -> settingList.add(new Setting(setting, true)));
+        this.settings = settingList;
+    }
+
+    public boolean toggle(SettingType settingType) {
+        if (!hasSetting(settingType)) getSettings().add(new Setting(settingType, true));
+
+        for (Setting setting : getSettings()) {
+            if (setting.getSettingType() == settingType) {
+                return setting.toggle();
+            }
+        }
+        return false;
+    }
+
+    public Optional<Setting> getSetting(SettingType settingType){
+        if(!hasSetting(settingType)) getSettings().add(new Setting(settingType, true));
+        return getSettings().stream().filter(setting -> setting.getSettingType() == settingType).findFirst();
+    }
+
+    public boolean hasSetting(SettingType settingType) {
+        return getSettings().stream().anyMatch(setting -> setting.getSettingType() == settingType);
     }
 
     public void prestige(Player player, Economy economy) {
@@ -93,7 +119,7 @@ public class PrisonPlayer {
             double totalCost = 0.0D;
             double balance = economy.getBalance(player);
 
-            while(true){
+            while (true) {
 
                 double cost = Math.pow((prestige + prestigeGained) * BASE_COST, 2);
 

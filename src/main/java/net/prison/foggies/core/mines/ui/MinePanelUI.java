@@ -5,13 +5,11 @@ import me.lucko.helper.menu.Gui;
 import me.lucko.helper.menu.scheme.MenuPopulator;
 import me.lucko.helper.menu.scheme.MenuScheme;
 import me.lucko.helper.utils.Players;
-import net.md_5.bungee.api.ChatColor;
 import net.prison.foggies.core.OPPrison;
 import net.prison.foggies.core.mines.handler.MineQueueHandler;
 import net.prison.foggies.core.mines.obj.PersonalMine;
 import net.prison.foggies.core.utils.Lang;
 import net.prison.foggies.core.utils.Number;
-import net.prison.foggies.core.utils.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.enchantments.Enchantment;
@@ -151,6 +149,25 @@ public class MinePanelUI extends Gui {
                         })
         );
 
+        setItem(31,
+                ItemStackBuilder
+                        .of(Material.END_STONE)
+                        .name("&bLucky Frenzy")
+                        .lore(
+                                "&7A &bLucky Frenzy &7is a special time based",
+                                "&7mine related event that sets your entire",
+                                "&7mine to &bLucky Blocks&7.",
+                                "",
+                                symbol + "&bLucky Frenzies &7can be acquired in the &bCredit Store&7.",
+                                symbol + "&bLucky Frenzy Tokens: &f" + Number.pretty(pMine.getFrenzyTokens())
+                        )
+                        .enchant(Enchantment.ARROW_DAMAGE)
+                        .hideAttributes()
+                        .build(() -> {
+                            pMine.beginFrenzy(getPlayer().getUniqueId());
+                        })
+        );
+
         setItem(32,
                 ItemStackBuilder
                         .of(Material.EXPERIENCE_BOTTLE)
@@ -163,10 +180,9 @@ public class MinePanelUI extends Gui {
                                 symbol + "&bBlocks Mined: &f" + Number.pretty(pMine.getBlocksMined()),
                                 symbol + "&bBlock Sell Price: &f$" + Number.pretty(pMine.getMineBlock().getSellPrice()),
                                 symbol + "&bTotal Blocks: &f" + Number.pretty(totalBlocks),
-                                "",
-                                symbol + "&bNext Level Progress: ",
-                                "   &8[" + StringUtils.getProgressBar((int) pMine.getMineExperience(), (int) pMine.getLevelCost(), 35, ':', ChatColor.BLUE, ChatColor.GRAY) + "&8]"
-                                )
+                                symbol + "&bCurrent Experience: &f" + Number.pretty(pMine.getMineExperience()),
+                                symbol + "&bRequired Experience: &f" + Number.pretty(pMine.getLevelCost())
+                        )
                         .enchant(Enchantment.ARROW_DAMAGE)
                         .hideAttributes().buildItem().build()
         );

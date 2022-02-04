@@ -3,6 +3,7 @@ package net.prison.foggies.core.mines.obj;
 import com.fastasyncworldedit.core.FaweAPI;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.function.pattern.RandomPattern;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BlockType;
@@ -33,7 +34,14 @@ public class PersonalMine {
     private MineBlock mineBlock;
     private MineRegion mineRegion;
     private ArrayList<UUID> friends;
+    private float luckyBlockChance;
+    private int frenzyTokens;
     private boolean isPublic;
+
+    public void increaseLuckyBlocks() {
+        if (getLuckyBlockChance() >= 0.05) return;
+        setLuckyBlockChance(getLuckyBlockChance() + 0.01F);
+    }
 
     public double getLevelCost() {
         return Math.pow(mineLevel + 1, 2) * 7891;
@@ -62,7 +70,7 @@ public class PersonalMine {
         setMineExperience(getMineExperience() + amount);
     }
 
-    public void increaseSize(){
+    public void increaseSize() {
         if (getMineLevel() + 1 % 10 == 0) {
             boolean increasedSize = mineRegion.increaseMineRegion(1);
 
@@ -74,11 +82,20 @@ public class PersonalMine {
         }
     }
 
-    private void msg(String message){
+    private void msg(String message) {
         final Optional<Player> owner = Players.get(mineOwner);
         owner.ifPresent(player -> {
             Players.msg(player, message);
         });
+    }
+
+    public void addFrenzyTokens(int amount) {
+        setFrenzyTokens(getFrenzyTokens() + amount);
+    }
+
+    public void removeFrenzyTokens(int amount) {
+        if (getFrenzyTokens() - amount < 0) amount = getFrenzyTokens();
+        setFrenzyTokens(getFrenzyTokens() - amount);
     }
 
     public void addLevel(long amount) {
@@ -103,10 +120,38 @@ public class PersonalMine {
 
     public void reset() {
         final World world = FaweAPI.getWorld(mineRegion.getPoint1().getWorld().getName());
+        RandomPattern randomPattern = new RandomPattern();
+        randomPattern.add(BlockType.REGISTRY.get(mineBlock.getMaterial().toLowerCase()), 0.9);
+        randomPattern.add(BlockTypes.END_STONE, 0.01);
 
         Schedulers.async().run(() -> {
             try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
-                editSession.setBlocks((Region) mineRegion.toCuboidRegion(), BlockType.REGISTRY.get(mineBlock.getMaterial().toLowerCase()));
+                editSession.setBlocks((Region) mineRegion.toCuboidRegion(), randomPattern);
+                editSession.flushQueue();
+            }
+        });
+
+    }
+
+    public void beginFrenzy(UUID uuid) {
+
+        if (uuid != mineOwner) {
+            msg(Lang.ONLY_MINE_OWNER.getMessage());
+            return;
+        }
+
+        if (getFrenzyTokens() <= 0) {
+            msg(Lang.NOT_ENOUGH_FRENZY_TOKENS.getMessage());
+            return;
+        }
+
+
+        final World world = FaweAPI.getWorld(mineRegion.getPoint1().getWorld().getName());
+        removeFrenzyTokens(1);
+
+        Schedulers.async().run(() -> {
+            try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
+                editSession.setBlocks((Region) mineRegion.toCuboidRegion(), BlockTypes.END_STONE);
                 editSession.flushQueue();
             }
         });

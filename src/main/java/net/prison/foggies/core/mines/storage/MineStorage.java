@@ -67,6 +67,7 @@ public class MineStorage {
                                 new SimpleLocation(left), new SimpleLocation(maxRight),
                                 new SimpleLocation(maxLeft)),
                         new ArrayList<>(),
+                        0.01F,
                         false
                 );
 

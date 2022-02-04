@@ -14,6 +14,7 @@ import net.prison.foggies.core.utils.StringUtils;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 
@@ -22,6 +23,7 @@ import java.util.*;
 @AllArgsConstructor
 public class BackPack implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private HashMap<MineBlock, Long> contents;

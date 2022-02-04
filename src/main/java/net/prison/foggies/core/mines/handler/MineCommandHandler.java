@@ -1,6 +1,7 @@
-package net.prison.foggies.core.mines.commands;
+package net.prison.foggies.core.mines.handler;
 
 import net.prison.foggies.core.OPPrison;
+import net.prison.foggies.core.mines.commands.*;
 
 public class MineCommandHandler {
 
@@ -11,5 +12,6 @@ public class MineCommandHandler {
         new MineResetCMD(plugin);
         new MinePanelCMD(plugin);
         new MineFriendCMD(plugin);
+        new FrenzyTokenGiveCMD(plugin);
     }
 }
