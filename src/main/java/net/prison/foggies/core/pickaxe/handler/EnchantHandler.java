@@ -2,10 +2,11 @@ package net.prison.foggies.core.pickaxe.handler;
 
 import lombok.Getter;
 import net.prison.foggies.core.OPPrison;
+import net.prison.foggies.core.pickaxe.enchants.Fortune;
+import net.prison.foggies.core.pickaxe.enchants.Luckcavator;
 import net.prison.foggies.core.pickaxe.model.EnchantBase;
 import net.prison.foggies.core.pickaxe.enchants.JackHammer;
 import net.prison.foggies.core.pickaxe.enchants.Producer;
-import net.prison.foggies.core.pickaxe.enchants.TokenFinder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,8 +39,9 @@ public class EnchantHandler {
 
     private List<EnchantBase> getEnchants(){
         return Arrays.asList(
-                new TokenFinder(),
+                new Fortune(),
                 new Producer(),
+                new Luckcavator(),
                 new JackHammer()
         );
     }

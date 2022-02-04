@@ -10,6 +10,12 @@ import java.util.List;
 @AllArgsConstructor
 public enum SettingType {
 
+    CRATE_MESSAGES("Crate Reward Setting",
+                Arrays.asList(
+                        "&7Toggle receiving crate messages",
+                        "&7when you open a crate."
+                )
+            ),
     TOKEN_MINER("Token Miner Setting",
             Arrays.asList(
                     "&7Toggle receiving messages when your",

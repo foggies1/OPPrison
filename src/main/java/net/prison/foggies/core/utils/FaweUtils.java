@@ -7,6 +7,7 @@ import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import net.prison.foggies.core.mines.obj.PersonalMine;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 import java.util.ArrayList;
@@ -37,6 +38,37 @@ public class FaweUtils {
                         if (!mine.getMineRegion().innerRegion().contains(block.getLocation())) continue;
                         blocks.add(block);
                         editSession.setBlock(block.getX(), block.getY(), block.getZ(), BlockTypes.AIR);
+                    }
+                }
+            }
+
+            editSession.flushQueue();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return blocks.size();
+    }
+
+    public static long getLuckcavator(PersonalMine mine, Location location) {
+        final World world = FaweAPI.getWorld(location.getWorld().getName());
+        List<Block> blocks = new ArrayList<>();
+
+        try (EditSession editSession = WorldEdit.getInstance().newEditSession(world)) {
+
+            Location min = mine.getMineRegion().innerRegion().getPoint1();
+            Location max = mine.getMineRegion().innerRegion().getPoint2();
+
+            for (int x = (int) max.getX(); x >= (int) min.getX(); x--) {
+                for (int y = location.getBlockY(); y > location.getBlockY() - 1; y--) {
+                    for (int z = (int) max.getZ(); z >= (int) min.getZ(); z--) {
+                        Block block = location.getWorld().getBlockAt(x, y, z);
+                        if (!mine.getMineRegion().innerRegion().contains(block.getLocation())) continue;
+                        if (block.getType() == Material.END_STONE) {
+                            blocks.add(block);
+                            editSession.setBlock(block.getX(), block.getY(), block.getZ(), BlockTypes.AIR);
+                        }
                     }
                 }
             }

@@ -1,29 +1,27 @@
 package net.prison.foggies.core.pickaxe.enchants;
 
-import me.lucko.helper.utils.Players;
+import me.lucko.helper.Schedulers;
+import net.prison.foggies.core.OPPrison;
+import net.prison.foggies.core.mines.handler.LuckyBlockHandler;
 import net.prison.foggies.core.mines.obj.PersonalMine;
 import net.prison.foggies.core.pickaxe.model.EnchantBase;
 import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
-import net.prison.foggies.core.player.constant.SettingType;
 import net.prison.foggies.core.player.obj.PrisonPlayer;
-import net.prison.foggies.core.player.obj.Setting;
+import net.prison.foggies.core.utils.FaweUtils;
 import net.prison.foggies.core.utils.Lang;
 import net.prison.foggies.core.utils.Math;
-import net.prison.foggies.core.utils.Number;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
 
-public class TokenFinder extends EnchantBase {
+public class Luckcavator extends EnchantBase {
 
     @Override
     public String getColor() {
-        return "&a";
+        return "&6";
     }
 
     @Override
@@ -33,37 +31,37 @@ public class TokenFinder extends EnchantBase {
 
     @Override
     public String getDisplayName() {
-        return getColor() + "&l" + getSymbol() + getColor() + "TokenFinder";
+        return getColor() + "&l" + getSymbol() + getColor() + "Luckcavator";
     }
 
     @Override
     public String getMenuDisplayName() {
-        return getColor() + "&lTokenFinder";
+        return getColor() + "Luckcavator";
     }
 
     @Override
     public String getIdentifier() {
-        return "TOKEN_FINDER";
+        return "LUCKCAVATOR";
     }
 
     @Override
     public long getStartLevel() {
-        return 100;
+        return 0;
     }
 
     @Override
     public List<String> getDescription() {
         return new ArrayList<>(
                 Arrays.asList(
-                        "&7Chance to find huge bursts of tokens",
-                        "&7while mining."
+                        "&7Chance to remove an entire layer of the mine",
+                        "&7but only targets &bLucky Blocks&7."
                 )
         );
     }
 
     @Override
     public long getMaxLevel() {
-        return 500;
+        return 1;
     }
 
     @Override
@@ -73,12 +71,12 @@ public class TokenFinder extends EnchantBase {
 
     @Override
     public float getChance() {
-        return 0.5F;
+        return 0.001F;
     }
 
     @Override
     public double getBasePrice() {
-        return 500000000;
+        return 100000000000D;
     }
 
     @Override
@@ -87,22 +85,22 @@ public class TokenFinder extends EnchantBase {
     }
 
     @Override
-    public void handle(PrisonPlayer prisonPlayer, PlayerPickaxe playerPickaxe, PersonalMine personalMine, BlockBreakEvent e) {
-        Player player = e.getPlayer();
-        final Optional<Setting> tokenMinerSetting = prisonPlayer.getSetting(SettingType.TOKEN_MINER);
-
+    public void handle(OPPrison plugin, PrisonPlayer prisonPlayer, PlayerPickaxe playerPickaxe, PersonalMine personalMine, BlockBreakEvent e) {
+        final Player player = e.getPlayer();
+        final LuckyBlockHandler handler = plugin.getLuckyBlockHandler();
         long level = playerPickaxe.getLevel(getIdentifier());
-        long producerLevel = playerPickaxe.getLevel("PRODUCER");
-        if (producerLevel <= 0) producerLevel = 1;
-
         if (!Math.isRandom(getChance() * level, getMaxLevel())) return;
 
-        long baseTokens = producerLevel * 10000L;
-        long tokens = ThreadLocalRandom.current().nextLong(10000L, baseTokens);
+        Schedulers.async().run(() -> {
+            long blockAffected = FaweUtils.getLuckcavator(personalMine, e.getBlock().getLocation());
 
-        prisonPlayer.addTokens(tokens, false);
+            personalMine.addBlocksMined(blockAffected);
+            playerPickaxe.addBlocksMined(blockAffected);
 
-        if (tokenMinerSetting.isPresent() && tokenMinerSetting.get().isToggled())
-            Players.msg(player, "&b&lLUCKY!!! &7You received " + Number.pretty(tokens) + " Tokens.");
+            for(int i = 0; i < blockAffected; i++){
+                handler.getAndApply(player);
+            }
+
+        });
     }
 }

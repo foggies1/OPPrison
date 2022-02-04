@@ -69,7 +69,7 @@ public class PrisonPlayer {
         this.backPack = new BackPack(new HashMap<>(), 0L, 1L, 1000000000L);
 
         ArrayList<Setting> settingList = new ArrayList<>();
-        Arrays.stream(SettingType.values()).forEach(setting -> settingList.add(new Setting(setting, true)));
+        Arrays.stream(SettingType.values()).forEach(setting -> settingList.add(new Setting(setting, false)));
         this.settings = settingList;
     }
 

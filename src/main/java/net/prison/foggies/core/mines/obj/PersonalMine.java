@@ -135,7 +135,7 @@ public class PersonalMine {
 
     public void beginFrenzy(UUID uuid) {
 
-        if (uuid != mineOwner) {
+        if (!uuid.equals(mineOwner)) {
             msg(Lang.ONLY_MINE_OWNER.getMessage());
             return;
         }
@@ -154,7 +154,13 @@ public class PersonalMine {
                 editSession.setBlocks((Region) mineRegion.toCuboidRegion(), BlockTypes.END_STONE);
                 editSession.flushQueue();
             }
-        });
+
+
+        }).thenAcceptAsync(c -> Schedulers.async().runLater(() -> {
+            reset();
+            msg(Lang.FRENZY_ENDED.getMessage());
+        }, 20 * 60L));
+
 
     }
 

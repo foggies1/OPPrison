@@ -158,7 +158,9 @@ public class MinePanelUI extends Gui {
                                 "&7mine related event that sets your entire",
                                 "&7mine to &bLucky Blocks&7.",
                                 "",
-                                symbol + "&bLucky Frenzies &7can be acquired in the &bCredit Store&7.",
+                                "&7Once activated you have &b1 Minute to mine as many",
+                                "&bLucky Blocks &7as possible.",
+                                "",
                                 symbol + "&bLucky Frenzy Tokens: &f" + Number.pretty(pMine.getFrenzyTokens())
                         )
                         .enchant(Enchantment.ARROW_DAMAGE)

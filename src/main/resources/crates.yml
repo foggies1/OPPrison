@@ -1,0 +1,21 @@
+crates:
+  common:
+    menu-name: "&aCommon Crate"
+    key-item:
+      material: TRIPWIRE_HOOK
+      display-name: "&aCommon Crate Key"
+      lore:
+        - "&7This is a &aCommon Crate Key&7,"
+        - "&7Right Click while holding to open."
+    rewards:
+      reward-1:
+        display-name: "&e1,000,000 Tokens"
+        material: SUNFLOWER
+        chance: 1.0
+        lore:
+          - "&7Receive 1,000,000 Tokens."
+        reward-list:
+          - "token 1000000"
+          - "token 1000000"
+          - "token 1000000"
+

@@ -2,22 +2,27 @@ package net.prison.foggies.core;
 
 import lombok.Getter;
 import net.milkbowl.vault.economy.Economy;
+import net.prison.foggies.core.crates.handler.CrateCommandHandler;
+import net.prison.foggies.core.crates.handler.CrateHandler;
+import net.prison.foggies.core.crates.handler.CrateParser;
+import net.prison.foggies.core.crates.storage.CrateStorage;
 import net.prison.foggies.core.events.BlockBreakListener;
 import net.prison.foggies.core.events.PlayerJoinQuitListener;
-import net.prison.foggies.core.mines.storage.MineBlockStorage;
 import net.prison.foggies.core.mines.database.MineDatabase;
-import net.prison.foggies.core.mines.handler.MineQueueHandler;
-import net.prison.foggies.core.mines.storage.MineStorage;
+import net.prison.foggies.core.mines.handler.LuckyBlockHandler;
 import net.prison.foggies.core.mines.handler.MineCommandHandler;
+import net.prison.foggies.core.mines.handler.MineQueueHandler;
+import net.prison.foggies.core.mines.storage.MineBlockStorage;
+import net.prison.foggies.core.mines.storage.MineStorage;
 import net.prison.foggies.core.pickaxe.database.PickaxeDatabase;
 import net.prison.foggies.core.pickaxe.events.PickaxeInteractListener;
 import net.prison.foggies.core.pickaxe.handler.EnchantHandler;
 import net.prison.foggies.core.pickaxe.handler.PickaxeCommandHandler;
 import net.prison.foggies.core.pickaxe.handler.PickaxeHandler;
 import net.prison.foggies.core.pickaxe.storage.PickaxeStorage;
+import net.prison.foggies.core.player.commands.PlayerCommandHandler;
 import net.prison.foggies.core.player.database.PlayerDatabase;
 import net.prison.foggies.core.player.storage.PlayerStorage;
-import net.prison.foggies.core.player.commands.PlayerCommandHandler;
 import net.prison.foggies.core.utils.ConfigManager;
 import net.prison.foggies.core.utils.PersistentData;
 import net.prison.foggies.core.utils.WorldUtil;
@@ -34,16 +39,25 @@ public final class OPPrison extends JavaPlugin {
 
     private final Logger logger = Bukkit.getLogger();
     private ConfigManager configManager;
+
     private PlayerStorage playerStorage;
     private PlayerDatabase playerDatabase;
+
     private MineDatabase mineDatabase;
     private MineStorage mineStorage;
     private MineBlockStorage mineBlockStorage;
     private MineQueueHandler mineQueueHandler;
+
     private PickaxeHandler pickaxeHandler;
     private EnchantHandler enchantHandler;
     private PickaxeDatabase pickaxeDatabase;
     private PickaxeStorage pickaxeStorage;
+    private LuckyBlockHandler luckyBlockHandler;
+
+    private CrateParser crateParser;
+    private CrateStorage crateStorage;
+    private CrateHandler crateHandler;
+
     private World mineWorld;
     private File schematicsFolder;
 
@@ -73,6 +87,12 @@ public final class OPPrison extends JavaPlugin {
         this.pickaxeHandler = new PickaxeHandler(this);
         this.pickaxeStorage = new PickaxeStorage(this);
 
+        this.luckyBlockHandler = new LuckyBlockHandler(this);
+
+        this.crateParser = new CrateParser(this);
+        this.crateStorage = new CrateStorage(this);
+        this.crateHandler = new CrateHandler(this);
+
         new PlayerJoinQuitListener(this);
         new BlockBreakListener(this);
         new PickaxeInteractListener(this);
@@ -80,6 +100,7 @@ public final class OPPrison extends JavaPlugin {
         new PlayerCommandHandler(this);
         new MineCommandHandler(this);
         new PickaxeCommandHandler(this);
+        new CrateCommandHandler(this);
     }
 
     @Override

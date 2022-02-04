@@ -21,6 +21,8 @@ public enum Lang {
     TOGGLED_SETTING("&7You have %status% the %setting_type%."),
     NOT_ENOUGH_FRENZY_TOKENS("&7You do not have enough &bFrenzy Tokens&7."),
     ONLY_MINE_OWNER("&7Only the mine owner can do this!"),
+    TOKEN_REWARD("%luck_type% &7You've received &b%tokens%&7."),
+    FRENZY_ENDED("&7Unfortunately &bLucky Frenzy&7 has finished!"),
     MINE_ADDED_TO_QUEUE("&7Your Mine has been added to the queue to reset!"),
     MINE_BLOCK_CHANGED("&7You've changed your Mine Block to &c%block%&7!"),
     MINE_SIZE_INCREASED("&7Your mine size has been increased by &b%amount%&7!"),

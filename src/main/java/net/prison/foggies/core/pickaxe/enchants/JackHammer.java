@@ -1,6 +1,7 @@
 package net.prison.foggies.core.pickaxe.enchants;
 
 import me.lucko.helper.Schedulers;
+import net.prison.foggies.core.OPPrison;
 import net.prison.foggies.core.mines.obj.PersonalMine;
 import net.prison.foggies.core.pickaxe.model.EnchantBase;
 import net.prison.foggies.core.pickaxe.obj.PlayerPickaxe;
@@ -86,8 +87,9 @@ public class JackHammer extends EnchantBase {
         to be raw.
      */
     @Override
-    public void handle(PrisonPlayer prisonPlayer, PlayerPickaxe playerPickaxe, PersonalMine personalMine, BlockBreakEvent e) {
+    public void handle(OPPrison plugin, PrisonPlayer prisonPlayer, PlayerPickaxe playerPickaxe, PersonalMine personalMine, BlockBreakEvent e) {
         long level = playerPickaxe.getLevel(getIdentifier());
+        long fortuneLevel = playerPickaxe.getLevel("FORTUNE");
         if (!Math.isRandom(getChance() * level, getMaxLevel())) return;
 
         Schedulers.async().run(() -> {
@@ -96,7 +98,7 @@ public class JackHammer extends EnchantBase {
 
             personalMine.addBlocksMined(blockAffected);
             playerPickaxe.addBlocksMined(blockAffected);
-            backPack.addBlock(personalMine.getMineBlock(), blockAffected);
+            backPack.addBlock(personalMine.getMineBlock(), blockAffected * fortuneLevel);
         });
     }
 }
